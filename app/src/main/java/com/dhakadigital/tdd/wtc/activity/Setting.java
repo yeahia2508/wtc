@@ -4,14 +4,15 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
-
 import com.dhakadigital.tdd.wtc.R;
+import com.dhakadigital.tdd.wtc.adapter.OrgInfoAdapter;
 import com.dhakadigital.tdd.wtc.database.Database;
 import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
 
@@ -30,6 +31,12 @@ public class Setting extends AppCompatActivity {
 
     //database
     Database database;
+
+    //adapter
+    OrgInfoAdapter orgInfoAdapter;
+
+    //ArrayList
+    ArrayList<OrgInfo> orgInfos = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +59,6 @@ public class Setting extends AppCompatActivity {
         //edittext
         etOrgName = (EditText) findViewById(R.id.etOriganizationName);
         etOrgAddress  = (EditText) findViewById(R.id.etOrgAddress);
-
         //button
         btSave = (Button) findViewById(R.id.btSave);
 
@@ -62,8 +68,8 @@ public class Setting extends AppCompatActivity {
         //database
         database = new Database(getApplicationContext());
 
-
         initListener();
+        setUpAdapter();
     }
 
     private void initListener() {
@@ -81,8 +87,8 @@ public class Setting extends AppCompatActivity {
 
                     orgInfo.setName(org_name);
                     orgInfo.setAddress(org_address);
-
                     database.insertOrgInfo(orgInfo);
+                    updateAdapter();
                 }else {
                     Toast.makeText(getApplicationContext(), "Data Missing", Toast.LENGTH_SHORT).show();
                 }
@@ -90,8 +96,36 @@ public class Setting extends AppCompatActivity {
         });
     }
 
-    private void setUpAdapter(){
-
+    private void updateAdapter() {
     }
 
+    private void setUpAdapter(){
+        //get data form database
+        orgInfos = database.getAllOrgInfo();
+
+        //set up adapter
+        orgInfoAdapter = new OrgInfoAdapter(orgInfos);
+        LinearLayoutManager layoutmanager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
+        layoutmanager.setAutoMeasureEnabled(true);
+        rvOrgList.setLayoutManager(layoutmanager);
+        rvOrgList.setAdapter(orgInfoAdapter);
+
+        //adapter click event
+        orgInfoAdapter.SetOnItemClickListener(new OrgInfoAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(getApplicationContext(), "Item Click", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onDeleteIconClick(View view, int position) {
+                orgInfoAdapter.delete(position);
+            }
+
+            @Override
+            public void onEditIconClick(View view, int position) {
+                Toast.makeText(getApplicationContext(), "Edit Click", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
 }

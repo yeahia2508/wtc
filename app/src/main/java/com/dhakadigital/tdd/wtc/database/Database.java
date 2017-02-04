@@ -63,6 +63,14 @@ public class Database  {
         return listOrgInfo;
     }
 
+    public void deleteOrgInfo(OrgInfo orgInfo){
+       /* mDatabase.delete(DatabaseHelper.TABLE_ORANIZATION_INFO, )*/
+    }
+
+    public void editOrgInfo(OrgInfo orgInfo){
+
+    }
+
     public static class DatabaseHelper extends SQLiteOpenHelper {
 
         private static final String DB_NAME = "wtc_db";
