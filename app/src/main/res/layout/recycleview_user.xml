@@ -16,18 +16,22 @@
 
             <TableRow>
                 <TextView
+                    android:id="@+id/tv_ern_date"
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="12/12/2012"/>
                 <TextView
+                    android:id="@+id/tv_ern_start_end_time"
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="12.00~21:00"/>
                 <TextView
+                    android:id="@+id/tv_ern_duration"
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="6hr"/>
                 <TextView
+                    android:id="@+id/tv_ern_wages"
                     android:gravity="center"
                     android:layout_weight="1"
                     android:text="$40"/>
