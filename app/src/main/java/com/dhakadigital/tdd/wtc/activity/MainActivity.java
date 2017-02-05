@@ -75,7 +75,11 @@ EarningInfo earningInfo = new EarningInfo("00","00","00","00");
 
     private void setUpAdapter() {
         //get data from database
-//        earningInfos;
+        earningInfos = database.getAllEarningInfo();
+
+        //set up adapter
+        earningInfoAdapter = new EarningInfoAdapter(earningInfos);
+
     }
 
     private void initListener() {

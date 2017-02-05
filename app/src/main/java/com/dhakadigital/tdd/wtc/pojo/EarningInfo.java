@@ -11,6 +11,9 @@ public class EarningInfo {
     public String duration;
     public String wages;
 
+    public EarningInfo() {
+    }
+
     public EarningInfo(String date_in_millis, String start_time_millis, String duration, String wages) {
         this.date_in_millis = date_in_millis;
         this.start_time_millis = start_time_millis;
