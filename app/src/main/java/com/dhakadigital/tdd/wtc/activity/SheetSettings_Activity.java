@@ -7,6 +7,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -107,8 +108,11 @@ public class SheetSettings_Activity extends AppCompatActivity {
             public void onClick(View v) {
 
                 //TODO change org  name and org address
+                int spnrPosition = spOrganization.getSelectedItemPosition();
+                orgName = adapter.getItem(spnrPosition-1);
+                Log.e("Spinner", spnrPosition +"");
+                Toast.makeText(SheetSettings_Activity.this, orgName, Toast.LENGTH_SHORT).show();
 
-                String org_name = orgName;
                 String sheet_name = etSheetName.getText().toString();
 
                 if(!sheet_name.isEmpty()){
@@ -117,9 +121,9 @@ public class SheetSettings_Activity extends AppCompatActivity {
                     SheetInfo sheetInfo = new SheetInfo();
 
 
-                    sheetInfo.setName(org_name);
-                    //sheetInfo.setOrg_name(org_address);
-                    sheetInfo.setOrg_address(sheet_name);
+                    sheetInfo.setName(sheet_name);
+                    sheetInfo.setOrg_name(orgName);
+                    sheetInfo.setOrg_address("heelo");
 
                     //TODO change org uid
                     sheetInfo.setOrg_uid("1");
@@ -132,13 +136,26 @@ public class SheetSettings_Activity extends AppCompatActivity {
                 }
             }
         });
+//        spOrganization.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//            @Override
+//            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+//                orgName = adapter.getItem(position);
+//                /*OrgInfo orgInfo = database.searchOrg(orgName);
+//                Toast.makeText(getApplicationContext(), orgInfo.getAddress(), Toast.LENGTH_SHORT).show();*/
+//            }
+//
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
+//
+//            }
+//        });
 
-        spOrganization.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        /*spOrganization.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 orgName = adapter.getItem(position);
             }
-        });
+        });*/
     }
 
     private void updateAdapter(SheetInfo sheetInfo) {

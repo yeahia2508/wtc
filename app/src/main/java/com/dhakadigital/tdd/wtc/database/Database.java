@@ -162,6 +162,21 @@ public class Database  {
         return listSheetInfo;
     }
 
+    public OrgInfo searchOrg(String orgName){
+        Cursor cursor;
+        OrgInfo orgInfo = new OrgInfo();
+        cursor = mDatabase.query(DatabaseHelper.CREATE_TABLE_ORG_INFO, org_info_column, DatabaseHelper.C_ORG_NAME + "='" + orgName+"'", null, null, null, null,null);
+
+        if(cursor != null && cursor.getCount() > 0) {
+            cursor.moveToFirst();
+
+            orgInfo.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_NAME)));
+            orgInfo.setAddress(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_ADDRESS)));
+        }
+
+        return orgInfo;
+    }
+
     //----------------------------INNER DATABASE CLASS-----------------------------------
     public static class DatabaseHelper extends SQLiteOpenHelper {
 

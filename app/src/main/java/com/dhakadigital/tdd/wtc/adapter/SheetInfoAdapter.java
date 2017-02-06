@@ -59,7 +59,7 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
         //TODO: boss if this is here will it through null pointer when im in sheetSettingsActivity?
 
         holder.tvSheetName.setText(sheetInfos.get(position).getName());
-        holder.tvOrgAddress.setText(sheetInfos.get(position).getOrg_name());
+        holder.tvOrgName.setText(sheetInfos.get(position).getOrg_name());
         holder.tvOrgAddress.setText(sheetInfos.get(position).getOrg_address());
     }
 
