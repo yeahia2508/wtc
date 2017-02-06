@@ -6,6 +6,7 @@ package com.dhakadigital.tdd.wtc.pojo;
 
 public class EarningInfo {
     public int id;
+    public String sheet_uid;
     public String date_in_millis;
     public String start_time_millis;
     public String duration;
@@ -14,11 +15,20 @@ public class EarningInfo {
     public EarningInfo() {
     }
 
-    public EarningInfo(String date_in_millis, String start_time_millis, String duration, String wages) {
+    public EarningInfo(String sheet_uid, String date_in_millis, String start_time_millis, String duration, String wages) {
+        this.sheet_uid = sheet_uid;
         this.date_in_millis = date_in_millis;
         this.start_time_millis = start_time_millis;
         this.duration = duration;
         this.wages = wages;
+    }
+
+    public String getSheet_uid() {
+        return sheet_uid;
+    }
+
+    public void setSheet_uid(String sheet_uid) {
+        this.sheet_uid = sheet_uid;
     }
 
     public int getId() {

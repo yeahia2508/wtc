@@ -40,7 +40,8 @@ public class Database  {
             DatabaseHelper.C_S_NAME,
             DatabaseHelper.C_S_ORG_UID,
             DatabaseHelper.C_S_ORG_NAME,
-            DatabaseHelper.C_S_ORG_ADDRESS
+            DatabaseHelper.C_S_ORG_ADDRESS,
+            DatabaseHelper.C_S_HOUR_RATE
     };
 
     //USER EARNING
@@ -70,15 +71,16 @@ public class Database  {
 
     //USER INCOME DATA INSERT
     public void insertEarningInfo(EarningInfo earningInfo){
-        String sql = "INSERT INTO " + (DatabaseHelper.TABLE_WAGE + " VALUES(?,?,?,?,?)");
+        String sql = "INSERT INTO " + (DatabaseHelper.TABLE_WAGE + " VALUES(?,?,?,?,?,?)");
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         mDatabase.beginTransaction();
 
         statement.clearBindings();
-        statement.bindString(2,earningInfo.getDate_in_millis());
-        statement.bindString(3,earningInfo.getStart_time_millis());
-        statement.bindString(4,earningInfo.getDuration());
-        statement.bindString(5,earningInfo.getWages());
+        statement.bindString(2,earningInfo.getSheet_uid());
+        statement.bindString(3,earningInfo.getDate_in_millis());
+        statement.bindString(4,earningInfo.getStart_time_millis());
+        statement.bindString(5,earningInfo.getDuration());
+        statement.bindString(6,earningInfo.getWages());
         statement.execute();
 
         mDatabase.setTransactionSuccessful();
@@ -87,7 +89,7 @@ public class Database  {
 
     //SHEET INFO DATA INSERT
     public void insertSheetInfo(SheetInfo sheetInfo){
-        String sql = "INSERT INTO " + (DatabaseHelper.TABLE_SHEET + " VALUES(?,?,?,?,?)");
+        String sql = "INSERT INTO " + (DatabaseHelper.TABLE_SHEET + " VALUES(?,?,?,?,?,?)");
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         mDatabase.beginTransaction();
 
@@ -96,6 +98,7 @@ public class Database  {
         statement.bindString(3,sheetInfo.getOrg_uid());
         statement.bindString(4,sheetInfo.getOrg_name());
         statement.bindString(5,sheetInfo.getOrg_address());
+        statement.bindDouble(6,sheetInfo.getHourRate());
         statement.execute();
 
         mDatabase.setTransactionSuccessful();
@@ -156,13 +159,83 @@ public class Database  {
                 sheetInfo.setOrg_uid(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_ORG_UID)));
                 sheetInfo.setOrg_name(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_ORG_NAME)));
                 sheetInfo.setOrg_address(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_ORG_ADDRESS)));
+                sheetInfo.setHourRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.C_S_HOUR_RATE)));
                 listSheetInfo.add(sheetInfo);
             }while (cursor.moveToNext());
         }
         return listSheetInfo;
     }
 
-    public OrgInfo searchOrg(String orgName){
+
+    //----------------------------SEARCH QUERY FROM EARNING TABLE-----------------------------------
+    //this query will find the selected sheet in mainActivity.sheetSpinner=value
+    //and calculate all the values listed below
+    //row_count = date(how many day i worked / how many entry there)
+    //sum all duration value and show = total duration
+    //sum all wages values and show = total wages
+
+    //USER EARNING GET ALL INFO
+    public ArrayList<EarningInfo> getEarningInfoBySheet(String sheetUid){
+        ArrayList<EarningInfo> listEarningInfo = new ArrayList<>();
+        Cursor cursor;
+//        cursor = mDatabase.query(DatabaseHelper.TABLE_WAGE, user_earning_info_column,null,null,null,null,DatabaseHelper.C_E_UID+" DESC");
+        cursor = mDatabase.rawQuery("SELECT * FROM "+DatabaseHelper.TABLE_WAGE+" WHERE  sheet_uid ='"+sheetUid+"'",null);
+
+        if (cursor != null && cursor.moveToFirst()){
+            do{
+                EarningInfo earningInfo = new EarningInfo();
+                earningInfo.setDate_in_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
+                earningInfo.setStart_time_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
+                earningInfo.setDuration(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
+                earningInfo.setWages(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
+                listEarningInfo.add(earningInfo);
+            }while (cursor.moveToNext());
+        }
+        return listEarningInfo;
+    }
+
+    //---get total worked day from "TABLE_WAGE" where sheet id is selected from spinner--
+    public int getTotalDayCount (int sheetId){
+        int totalDay;
+        Cursor mCursorCount = mDatabase.rawQuery("SELECT COUNT(*) FROM "+ DatabaseHelper.TABLE_WAGE +" WHERE sheet_uid ='"+sheetId+"'",null);
+        mCursorCount.moveToFirst();
+        totalDay = mCursorCount.getInt(0);
+        mCursorCount.close();
+        return totalDay;
+    }
+
+    //---get total of wage and duration day--
+    public int getTotalWage (int sheetId){
+        int totalWage;
+        Cursor mSumCursor = mDatabase.rawQuery("SELECT SUM(wages) FROM "+DatabaseHelper.TABLE_WAGE +" WHERE sheet_uid ='"+sheetId+"'",null);
+        mSumCursor.moveToFirst();
+        totalWage = mSumCursor.getInt(0);
+        mSumCursor.close();
+        return totalWage;
+    }
+
+    //---get total of duration from wage table ---
+    public int getTotalDuration(int sheetId){
+        int totalDuration;
+        Cursor mSumCursor = mDatabase.rawQuery("SELECT SUM(duration) FROM "+DatabaseHelper.TABLE_WAGE +" WHERE sheet_uid ='"+sheetId+"'",null);
+        mSumCursor.moveToFirst();
+        totalDuration = mSumCursor.getInt(0);
+        mSumCursor.close();
+        return totalDuration;
+    }
+
+
+
+    //-------------------------TODO: please see here in Database.java--------------------------
+//    bro i may get a sql exception from mainActivity caused by this three rawQuery. if possible can we return
+//    total day, total wage, total duration in one row?
+
+
+
+
+
+
+   /* public OrgInfo searchOrg(String orgName){
         Cursor cursor;
         OrgInfo orgInfo = new OrgInfo();
         cursor = mDatabase.query(DatabaseHelper.CREATE_TABLE_ORG_INFO, org_info_column, DatabaseHelper.C_ORG_NAME + "='" + orgName+"'", null, null, null, null,null);
@@ -175,7 +248,7 @@ public class Database  {
         }
 
         return orgInfo;
-    }
+    }*/
 
     //----------------------------INNER DATABASE CLASS-----------------------------------
     public static class DatabaseHelper extends SQLiteOpenHelper {
@@ -199,6 +272,7 @@ public class Database  {
         //USER EARNING COLUMN
         // variable : e_s_time (earning_start_time);
         public static final String C_E_UID = "id";
+        public static final String C_E_SHEET_UID = "sheet_uid";
         public static final String C_E_DATE = "e_date";
         public static final String C_E_START_TIME = "e_s_time";
         public static final String C_E_DURATION = "duration";
@@ -210,6 +284,7 @@ public class Database  {
         public static final String C_S_ORG_UID = "org_uid";
         public static final String C_S_ORG_NAME = "org_name";
         public static final String C_S_ORG_ADDRESS = "org_address_sheet";
+        public static final String C_S_HOUR_RATE = "org_hour_rate";
 
         //----------------------------CREATE TABLES QUERY-----------------------------------
         //ORGANIZATION TABLE CREATE QUERY
@@ -222,6 +297,7 @@ public class Database  {
         //USER EARNING TABLE CREATE QUERY
         private static final String CREATE_TABLE_USER_INCOME = "CREATE TABLE " + TABLE_WAGE + " (" +
                 C_E_UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                C_E_SHEET_UID + " TEXT, " +
                 C_E_DATE + " TEXT, " +
                 C_E_START_TIME + " TEXT, " +
                 C_E_DURATION + " TEXT, " +
@@ -233,8 +309,9 @@ public class Database  {
                 C_S_UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
                 C_S_NAME + " TEXT, " +
                 C_S_ORG_UID + " TEXT, " +
-                C_S_ORG_NAME + " TEXT, "+
-                C_S_ORG_ADDRESS + " TEXT "+
+                C_S_ORG_NAME + " TEXT, " +
+                C_S_ORG_ADDRESS + " TEXT, " +
+                C_S_HOUR_RATE + "" +
                 ");";
 
         public DatabaseHelper(Context context) {

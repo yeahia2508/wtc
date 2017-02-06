@@ -61,6 +61,7 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
         holder.tvSheetName.setText(sheetInfos.get(position).getName());
         holder.tvOrgName.setText(sheetInfos.get(position).getOrg_name());
         holder.tvOrgAddress.setText(sheetInfos.get(position).getOrg_address());
+        holder.tvHourRate.setText("$" + sheetInfos.get(position).getHourRate());
     }
 
     public void add (int position, SheetInfo sheetInfo){
@@ -85,7 +86,7 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
     }
 
     public class AddSheetInfoVH extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView tvOrgName, tvOrgAddress;
+        TextView tvOrgName, tvOrgAddress,tvHourRate;
         TextView tvSheetName;
         ImageView ivDelete, ivEdit;
 
@@ -94,6 +95,8 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
             tvSheetName = (TextView) itemView.findViewById(R.id.tvNameSheet);
             tvOrgName = (TextView) itemView.findViewById(R.id.tvName);
             tvOrgAddress = (TextView) itemView.findViewById(R.id.tvAddress);
+            tvHourRate = (TextView) itemView.findViewById(R.id.tvHourRate);
+
 
             ivDelete = (ImageView) itemView.findViewById(R.id.ivDelete);
             ivEdit = (ImageView) itemView.findViewById(R.id.ivEdit);

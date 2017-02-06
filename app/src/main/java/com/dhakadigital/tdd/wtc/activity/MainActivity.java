@@ -60,12 +60,6 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        //TODO: it was demo, delete it
-        EarningInfo earningInfo = new EarningInfo("12/12/2012","00","00","00");
-        earningInfos.add(earningInfo);
-
-        database.insertEarningInfo(earningInfo);
-
 
         initView();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -92,9 +86,9 @@ public class MainActivity extends AppCompatActivity {
 
         //Spinner
         spSheetName = (MaterialSpinner) findViewById(R.id.spnr_sheetName);
+        spSheetName.setSelection(1);
 
         initListener();
-        setUpAdapter();
         setUpSpinner();
     }
 
@@ -109,9 +103,11 @@ public class MainActivity extends AppCompatActivity {
         spSheetName.setAdapter(spnr_adapter);
     }
 
-    private void setUpAdapter() {
+    //this adapter will show item when something is selected in spinner
+    private void setUpAdapter(String sheetUid) {
         //get data from database
-        earningInfos = database.getAllEarningInfo();
+//        earningInfos = database.getAllEarningInfo(); //for whole database value and we don't need that
+        earningInfos = database.getEarningInfoBySheet(sheetUid);
 
         //set up adapter
         earningInfoAdapter = new EarningInfoAdapter(earningInfos);
@@ -124,20 +120,33 @@ public class MainActivity extends AppCompatActivity {
 
     private void initListener() {
 
-        //---------------stopp button on click--------------
-        btStop.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                int spPosition = spSheetName.getSelectedItemPosition();
-                String sheetName = spnr_adapter.getItem(spPosition-1);
-                Toast.makeText(MainActivity.this, "from database "+sheetName, Toast.LENGTH_SHORT).show();
-            }
-        });
+        //---------------stop button on click--------------
+//        btStop.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                int spPosition = spSheetName.getSelectedItemPosition();
+//                String sheetUID = spnr_adapter.getItem(spPosition-1);
+//                Toast.makeText(MainActivity.this, "from database ", Toast.LENGTH_SHORT).show();
+//
+//
+//                //TODO: it was demo, delete it
+//                EarningInfo earningInfo = new EarningInfo("","later","14","00");
+//                earningInfos.add(earningInfo);
+//
+//                database.insertEarningInfo(earningInfo);
+//
+//
+//            }
+//        });
 
         //---------------Spinner item select listner--------------
         spSheetName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                Toast.makeText(MainActivity.this, "one item selected now seeing"+position, Toast.LENGTH_SHORT).show();
+
+//                int spnrPosition = spSheetName.getSelectedItemPosition();
+//                setUpAdapter(database.getAllEarningInfo().get(spnrPosition).getSheet_uid());
 
             }
 

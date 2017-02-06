@@ -29,7 +29,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
-                android:textSize="20dp" />
+                android:textSize="20dp"
+                android:text="Org Name"/>
+
+            <TextView
+                android:id="@+id/tvHourRate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Hour Rate"
+                android:textSize="20dp"/>
 
             <TextView
                 android:id="@+id/tvAddress"

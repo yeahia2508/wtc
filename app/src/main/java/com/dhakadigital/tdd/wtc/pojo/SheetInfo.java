@@ -10,6 +10,15 @@ public class SheetInfo {
     private String org_uid;
     private String org_name;
     private String org_address;
+    private Double hourRate;
+
+    public Double getHourRate() {
+        return hourRate;
+    }
+
+    public void setHourRate(Double hourRate) {
+        this.hourRate = hourRate;
+    }
 
     //----------------------------CONSTRUCTORS-----------------------------------
     public SheetInfo() {

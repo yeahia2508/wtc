@@ -33,7 +33,7 @@ public class SheetSettings_Activity extends AppCompatActivity {
     String orgName;
 
     //Edittext
-    EditText etOrgName, etOrgAddress, etSheetName;
+    EditText etSheetName,etSalaryRate;
 
     //Button
     Button btSave;
@@ -79,6 +79,7 @@ public class SheetSettings_Activity extends AppCompatActivity {
 
         //edittext
         etSheetName = (EditText) findViewById(R.id.etSheetName);
+        etSalaryRate = (EditText) findViewById(R.id.etSalaryRate);
 
         //TODO initialize org widget
         /*etOrgName = (EditText) findViewById(R.id.etOriganizationName);
@@ -124,7 +125,8 @@ public class SheetSettings_Activity extends AppCompatActivity {
                     sheetInfo.setName(sheet_name);
                     sheetInfo.setOrg_name(orgName);
                     sheetInfo.setOrg_address("heelo");
-
+                    Double hourRate = Double.parseDouble(etSalaryRate.getText().toString());
+                    sheetInfo.setHourRate(hourRate);
                     //TODO change org uid
                     sheetInfo.setOrg_uid("1");
 
@@ -167,6 +169,8 @@ public class SheetSettings_Activity extends AppCompatActivity {
             sheetInfoAdapter.add(0, sheetInfo);
             sheetInfoAdapter.notifyDataSetChanged();
         }
+
+        Toast.makeText(getApplicationContext(), sheetInfo.getHourRate() + "", Toast.LENGTH_SHORT).show();
     }
 
 

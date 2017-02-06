@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_sheet_settings_"
@@ -11,7 +11,8 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.dhakadigital.tdd.wtc.activity.SheetSettings_Activity"
-    tools:showIn="@layout/activity_sheet_settings_">
+    tools:showIn="@layout/activity_sheet_settings_"
+    android:orientation="vertical">
 
     <EditText
         android:id="@+id/etSheetName"
@@ -21,7 +22,6 @@
 
     <fr.ganfra.materialspinner.MaterialSpinner
         android:id="@+id/spOrganiztion"
-        android:layout_below="@id/etSheetName"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         app:ms_multiline="false"
@@ -38,19 +38,24 @@
         app:ms_alignLabels="false"
         app:ms_floatingLabelColor="@color/colorAccent" />
 
+    <EditText
+        android:id="@+id/etSalaryRate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="2dp"
+        android:hint="Salary Rate"/>
+
     <Button
         android:id="@+id/btSave"
-        android:layout_below="@id/spOrganiztion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvSheetList"
-        android:layout_below="@id/btSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listitem="@layout/recyclerview_sheet_earning" />
 
 
-</RelativeLayout>
+</LinearLayout>
