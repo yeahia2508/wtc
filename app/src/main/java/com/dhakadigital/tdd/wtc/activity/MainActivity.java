@@ -11,15 +11,23 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.EarningInfoAdapter;
 import com.dhakadigital.tdd.wtc.database.Database;
 import com.dhakadigital.tdd.wtc.pojo.EarningInfo;
+import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
+import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
 
 import java.util.ArrayList;
+
+import fr.ganfra.materialspinner.MaterialSpinner;
 
 public class MainActivity extends AppCompatActivity {
     //TextView
@@ -36,6 +44,10 @@ public class MainActivity extends AppCompatActivity {
 
     //Adapter
     EarningInfoAdapter earningInfoAdapter;
+    ArrayAdapter<String> spnr_adapter;
+
+    //Spinner
+    MaterialSpinner spSheetName;
 
     //ArrayList
     ArrayList<EarningInfo> earningInfos = new ArrayList<>();
@@ -43,10 +55,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         database = new Database(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        EarningInfo earningInfo = new EarningInfo("00","00","00","00");
+
+        //TODO: it was demo, delete it
+        EarningInfo earningInfo = new EarningInfo("12/12/2012","00","00","00");
         earningInfos.add(earningInfo);
 
         database.insertEarningInfo(earningInfo);
@@ -75,8 +90,23 @@ public class MainActivity extends AppCompatActivity {
         //database
         database = new Database(getApplicationContext());
 
+        //Spinner
+        spSheetName = (MaterialSpinner) findViewById(R.id.spnr_sheetName);
+
         initListener();
         setUpAdapter();
+        setUpSpinner();
+    }
+
+    private void setUpSpinner() {
+        ArrayList<SheetInfo>  sheetInfos = database.getAllSheetInfo();
+        String[] sheetNames = new String[sheetInfos.size()];
+        for (int i = 0; i < sheetInfos.size(); i++){
+            sheetNames[i] = sheetInfos.get(i).getName();
+        }
+        spnr_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sheetNames);
+        spnr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spSheetName.setAdapter(spnr_adapter);
     }
 
     private void setUpAdapter() {
@@ -93,6 +123,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initListener() {
+
+        //---------------stopp button on click--------------
+        btStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                int spPosition = spSheetName.getSelectedItemPosition();
+                String sheetName = spnr_adapter.getItem(spPosition-1);
+                Toast.makeText(MainActivity.this, "from database "+sheetName, Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        //---------------Spinner item select listner--------------
+        spSheetName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+                //TODO: set an error report if nothing is selected in spinner
+            }
+        });
 
     }
 
