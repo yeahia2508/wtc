@@ -9,6 +9,7 @@ public class OrgInfo {
     public String name;
     public String address;
 
+
     public int getId() {
         return id;
     }

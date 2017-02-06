@@ -6,19 +6,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import com.dhakadigital.tdd.wtc.R;
-import com.dhakadigital.tdd.wtc.constants.Constants;
 import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
-import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
-
 import java.util.ArrayList;
 
 /**
- * Created by y34h1a on 2/4/17.
+ * Created by y34h1a on 2/5/17.
  */
 
-public class OrgInfoAdapter extends RecyclerView.Adapter<OrgInfoAdapter.AddOrgInfoVH> {
+public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddSheetInfoVH> {
     //arrays for two view and pojo model
 //TODO: please read the note (^_^)
 //    -------------------------------------------------------------------
@@ -33,93 +29,75 @@ public class OrgInfoAdapter extends RecyclerView.Adapter<OrgInfoAdapter.AddOrgIn
 //    -                 IN SHA ALLAH                                    -
 //    -------------------------------------------------------------------
 
-    private ArrayList<OrgInfo> orgInfos = new ArrayList<>();
     private ArrayList<SheetInfo> sheetInfos = new ArrayList<>();
 
     private OnItemClickListener onItemClickListener;
     public String activityName;
 
-    public OrgInfoAdapter(ArrayList<OrgInfo> orgInfos){
-        this.orgInfos = orgInfos;
-    }
-    public OrgInfoAdapter(ArrayList<OrgInfo> orgInfos, String activityName){
-        this.orgInfos = orgInfos;
-        this.activityName = activityName;
-    }
-
-
-    /*public OrgInfoAdapter(ArrayList<SheetInfo> sheetInfos, String activityName, String i_think_we_need_better_plan){
+    public SheetInfoAdapter(ArrayList<SheetInfo> orgInfos){
         this.sheetInfos = sheetInfos;
     }
-    public OrgInfoAdapter(ArrayList<SheetInfo> sheetInfos, String activityName, String b, String c){
+
+
+    /*public SheetInfoAdapter(ArrayList<SheetInfo> sheetInfos, String activityName){
         this.sheetInfos = sheetInfos;
         this.activityName = activityName;
     }*/
 
+
     @Override
-    public AddOrgInfoVH onCreateViewHolder(ViewGroup parent, int viewType) {
-        View itemView;
-        if(activityName.equals(Constants.ACTIVITY_ORG_SETTING)){
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recycleview_org, parent, false);
-        }else {
-            itemView = LayoutInflater.from(parent.getContext())
+    public AddSheetInfoVH onCreateViewHolder(ViewGroup parent, int viewType) {
+        View itemView = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.recyclerview_sheet_earning, parent, false);
-        }
-        return new AddOrgInfoVH(itemView);
-    }
 
+        return new AddSheetInfoVH(itemView);
+    }
 
 
     @Override
-    public void onBindViewHolder(AddOrgInfoVH holder, int position) {
+    public void onBindViewHolder(AddSheetInfoVH holder, int position) {
         //TODO: boss if this is here will it through null pointer when im in sheetSettingsActivity?
-        holder.tvOrgName.setText(orgInfos.get(position).getName());
-        holder.tvOrgAddress.setText(orgInfos.get(position).getAddress());
 
-        if(activityName.equals(Constants.ACTIVITY_ORG_SETTING)){
-            holder.tvOrgName.setText(orgInfos.get(position).getName());
-            holder.tvOrgAddress.setText(orgInfos.get(position).getAddress());
-        }else{
-            holder.tvSheetName.setText(orgInfos.get(position).getName());
-        }
+        holder.tvSheetName.setText(sheetInfos.get(position).getName());
+        holder.tvOrgAddress.setText(sheetInfos.get(position).getOrg_name());
+        holder.tvOrgAddress.setText(sheetInfos.get(position).getOrg_address());
     }
 
-    public void add (int position, OrgInfo orgInfo){
-        orgInfos.add(position, orgInfo);
+    public void add (int position, SheetInfo sheetInfo){
+        sheetInfos.add(position, sheetInfo);
         notifyItemInserted(position);
     }
 
     public void delete(int position){
-        orgInfos.remove(position);
+        sheetInfos.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void reAddOrgInfo(ArrayList<OrgInfo> addOrgInfo){
-        orgInfos = addOrgInfo;
-        notifyItemRangeChanged(0, addOrgInfo.size());
+    public void reAddOrgInfo(ArrayList<SheetInfo> addSheetInfo){
+        sheetInfos = addSheetInfo;
+        notifyItemRangeChanged(0, addSheetInfo.size());
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        return orgInfos.size();
+        return sheetInfos.size();
     }
 
-    public class AddOrgInfoVH extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class AddSheetInfoVH extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvOrgName, tvOrgAddress;
-        TextView tvSheetName, tvOrgDetails;
+        TextView tvSheetName;
         ImageView ivDelete, ivEdit;
-        public AddOrgInfoVH(View itemView) {
+
+        public AddSheetInfoVH(View itemView) {
             super(itemView);
+            tvSheetName = (TextView) itemView.findViewById(R.id.tvNameSheet);
             tvOrgName = (TextView) itemView.findViewById(R.id.tvName);
             tvOrgAddress = (TextView) itemView.findViewById(R.id.tvAddress);
 
-            if(activityName.equals(Constants.ACTIVITY_SHEET_SETTING)){
-                tvSheetName = (TextView) itemView.findViewById(R.id.tvNameSheet);
-            }
             ivDelete = (ImageView) itemView.findViewById(R.id.ivDelete);
             ivEdit = (ImageView) itemView.findViewById(R.id.ivEdit);
+
             itemView.setOnClickListener(this);
             ivDelete.setOnClickListener(this);
             ivEdit.setOnClickListener(this);
@@ -159,3 +137,4 @@ public class OrgInfoAdapter extends RecyclerView.Adapter<OrgInfoAdapter.AddOrgIn
         this.onItemClickListener = onItemClickListener;
     }
 }
+

@@ -20,15 +20,15 @@
         android:hint="Insert Working Sheet Name:"/>
 
     <Button
-        android:id="@+id/btSaveSheet"
+        android:id="@+id/btSave"
         android:layout_below="@id/etSheetName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save" />
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/rvOrgList"
-        android:layout_below="@id/btSaveSheet"
+        android:id="@+id/rvSheetList"
+        android:layout_below="@id/btSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listitem="@layout/recyclerview_sheet_earning" />

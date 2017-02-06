@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.Toast;
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.OrgInfoAdapter;
+import com.dhakadigital.tdd.wtc.constants.Constants;
 import com.dhakadigital.tdd.wtc.database.Database;
 import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
 
@@ -88,7 +89,8 @@ public class Setting extends AppCompatActivity {
                     orgInfo.setName(org_name);
                     orgInfo.setAddress(org_address);
                     database.insertOrgInfo(orgInfo);
-                    updateAdapter();
+
+                    updateAdapter(orgInfo);
                 }else {
                     Toast.makeText(getApplicationContext(), "Data Missing", Toast.LENGTH_SHORT).show();
                 }
@@ -96,15 +98,24 @@ public class Setting extends AppCompatActivity {
         });
     }
 
-    private void updateAdapter() {
+    private void updateAdapter(OrgInfo orgInfo) {
+        if (orgInfoAdapter.getItemCount() > 1) {
+            orgInfoAdapter.add(orgInfoAdapter.getItemCount() - 1, orgInfo);
+            orgInfoAdapter.notifyDataSetChanged();
+
+        } else {
+            orgInfoAdapter.add(0, orgInfo);
+            orgInfoAdapter.notifyDataSetChanged();
+        }
     }
+
 
     private void setUpAdapter(){
         //get data form database
         orgInfos = database.getAllOrgInfo();
 
         //set up adapter
-        orgInfoAdapter = new OrgInfoAdapter(orgInfos);
+        orgInfoAdapter = new OrgInfoAdapter(orgInfos, Constants.ACTIVITY_ORG_SETTING);
         LinearLayoutManager layoutmanager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
         layoutmanager.setAutoMeasureEnabled(true);
         rvOrgList.setLayoutManager(layoutmanager);

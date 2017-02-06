@@ -64,8 +64,8 @@ public class EarningInfoAdapter extends RecyclerView.Adapter<EarningInfoAdapter.
         TextView tv_ern_date, tv_ern_start_end, tv_ern_duration, tv_ern_wages;
         public AddEarningInfoVH(View itemView) {
             super(itemView);
-            tv_ern_date = (TextView) itemView.findViewById(R.id.tvName);
-            tv_ern_start_end = (TextView) itemView.findViewById(R.id.tvAddress);
+            tv_ern_date = (TextView) itemView.findViewById(R.id.tv_ern_date);
+            tv_ern_start_end = (TextView) itemView.findViewById(R.id.tv_ern_start_end_time);
             tv_ern_duration = (TextView) itemView.findViewById(R.id.tv_ern_duration);
             tv_ern_wages = (TextView) itemView.findViewById(R.id.tv_ern_wages);
             itemView.setOnClickListener(this);

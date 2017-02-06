@@ -1,5 +1,6 @@
 package com.dhakadigital.tdd.wtc.activity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -42,10 +43,14 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        database = new Database(getApplicationContext());
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-EarningInfo earningInfo = new EarningInfo("00","00","00","00");
+        EarningInfo earningInfo = new EarningInfo("00","00","00","00");
         earningInfos.add(earningInfo);
+
+        database.insertEarningInfo(earningInfo);
+
 
         initView();
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -105,9 +110,16 @@ EarningInfo earningInfo = new EarningInfo("00","00","00","00");
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
+        //Intent
+        Intent action_intent;
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        if (id == R.id.action_sheet_settings) {
+            action_intent = new Intent(this,SheetSettings_Activity.class);
+            startActivity(action_intent);
+        }
+        if (id == R.id.action_organization_settings) {
+            action_intent = new Intent(this,Setting.class);
+            startActivity(action_intent);
         }
 
         return super.onOptionsItemSelected(item);

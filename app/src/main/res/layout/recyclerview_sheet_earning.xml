@@ -25,12 +25,24 @@
                 android:text="Sheet Name Here"/>
 
             <TextView
-                android:id="@+id/tvOrgDetails"
+                android:id="@+id/tvName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:textSize="20dp"
-                android:text="Organizations full details\norg name, org address"/>
+                android:text="Org Name"/>
+
+            <TextView
+                android:id="@+id/tvAddress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                android:textSize="20dp"
+                android:text="Org Address"/>
+
+            <!--edit button to edit sheet name if user want-->
+            <!--and-->
+            <!--delete button to delete sheet if user want-->
 
             <LinearLayout
                 android:layout_width="wrap_content"
@@ -38,7 +50,7 @@
                 android:orientation="horizontal">
 
                 <ImageView
-                    android:id="@+id/ivDeleteSheet"
+                    android:id="@+id/ivDelete"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:src="@drawable/delete"
@@ -46,7 +58,7 @@
                     />
 
                 <ImageView
-                    android:id="@+id/ivEditSheet"
+                    android:id="@+id/ivEdit"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:padding="3dp"
