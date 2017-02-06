@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -22,13 +24,21 @@ import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
 
 import java.util.ArrayList;
 
+import fr.ganfra.materialspinner.MaterialSpinner;
+
 public class SheetSettings_Activity extends AppCompatActivity {
+
+    //String
+    String orgName;
 
     //Edittext
     EditText etOrgName, etOrgAddress, etSheetName;
 
     //Button
     Button btSave;
+
+    //Spinner
+    MaterialSpinner spOrganization;
 
     //RecycleView
     RecyclerView rvSheetList;
@@ -38,6 +48,7 @@ public class SheetSettings_Activity extends AppCompatActivity {
 
     //adapter
     SheetInfoAdapter sheetInfoAdapter;
+    ArrayAdapter<String> adapter;
 
     //ArrayList
     ArrayList<SheetInfo> sheetInfos = new ArrayList<>();
@@ -62,14 +73,21 @@ public class SheetSettings_Activity extends AppCompatActivity {
     }
 
     private void initView() {
+        //String
+        String orgName;
+
         //edittext
         etSheetName = (EditText) findViewById(R.id.etSheetName);
 
         //TODO initialize org widget
         /*etOrgName = (EditText) findViewById(R.id.etOriganizationName);
         etOrgAddress  = (EditText) findViewById(R.id.etOrgAddress);*/
+
         //button
         btSave = (Button) findViewById(R.id.btSave);
+
+        //Spinner
+        spOrganization = (MaterialSpinner) findViewById(R.id.spOrganiztion);
 
         //recycleview
         rvSheetList = (RecyclerView) findViewById(R.id.rvSheetList);
@@ -79,6 +97,7 @@ public class SheetSettings_Activity extends AppCompatActivity {
 
         initListener();
         setUpAdapter();
+        setUpSpinner();
     }
 
     private void initListener() {
@@ -89,8 +108,7 @@ public class SheetSettings_Activity extends AppCompatActivity {
 
                 //TODO change org  name and org address
 
-                String org_name = "The Dhaka Digital";
-                String org_address = "Dhaka";
+                String org_name = orgName;
                 String sheet_name = etSheetName.getText().toString();
 
                 if(!sheet_name.isEmpty()){
@@ -100,7 +118,7 @@ public class SheetSettings_Activity extends AppCompatActivity {
 
 
                     sheetInfo.setName(org_name);
-                    sheetInfo.setOrg_name(org_address);
+                    //sheetInfo.setOrg_name(org_address);
                     sheetInfo.setOrg_address(sheet_name);
 
                     //TODO change org uid
@@ -112,6 +130,13 @@ public class SheetSettings_Activity extends AppCompatActivity {
                 }else {
                     Toast.makeText(getApplicationContext(), "Data Missing", Toast.LENGTH_SHORT).show();
                 }
+            }
+        });
+
+        spOrganization.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                orgName = adapter.getItem(position);
             }
         });
     }
@@ -156,5 +181,16 @@ public class SheetSettings_Activity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Edit Click", Toast.LENGTH_SHORT).show();
             }
         });
+    }
+
+    void setUpSpinner(){
+        ArrayList<OrgInfo>  orgInfos = database.getAllOrgInfo();
+        String[] orgNames = new String[orgInfos.size()];
+        for (int i = 0; i < orgInfos.size(); i++){
+            orgNames[i] = orgInfos.get(i).getName();
+        }
+        adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, orgNames);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spOrganization.setAdapter(adapter);
     }
 }

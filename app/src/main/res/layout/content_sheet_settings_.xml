@@ -19,9 +19,28 @@
         android:layout_height="wrap_content"
         android:hint="Insert Working Sheet Name:"/>
 
+    <fr.ganfra.materialspinner.MaterialSpinner
+        android:id="@+id/spOrganiztion"
+        android:layout_below="@id/etSheetName"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        app:ms_multiline="false"
+        app:ms_hint="Organiztion Name"
+        app:ms_enableFloatingLabel="false"
+        app:ms_enableErrorLabel="false"
+        app:ms_floatingLabelText="floating label"
+        app:ms_baseColor="@color/colorPrimary"
+        app:ms_highlightColor="@color/colorPrimary"
+        app:ms_thickness="2dp"
+        app:ms_hintColor="@color/colorAccent"
+        app:ms_arrowColor="@color/colorAccent"
+        app:ms_arrowSize="16dp"
+        app:ms_alignLabels="false"
+        app:ms_floatingLabelColor="@color/colorAccent" />
+
     <Button
         android:id="@+id/btSave"
-        android:layout_below="@id/etSheetName"
+        android:layout_below="@id/spOrganiztion"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Save" />
