@@ -13,30 +13,38 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.EarningInfoAdapter;
 import com.dhakadigital.tdd.wtc.database.Database;
 import com.dhakadigital.tdd.wtc.pojo.EarningInfo;
 import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
+import com.dhakadigital.tdd.wtc.utils.SharedPref;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
 
 //
 //    --------------------------issue to be fixed----------------------------------
-//    - we have to save data in shared preferance when press in start             -
+//    -(SOLVED) we have to save data in shared preferance when press in start     done         -
 //    - ------------------------start button action------------------------------ -
-//    - take start time and date, conver date to milli second, save date and      -
+//    - (SOLVED)take start time and date, conver date to milli second, save date and      -
 //    - millis to, shared preferances, disable spinner and start button           -
-//    - saving data.                                                              -
+//    - saving data.                                            -
 //    - ------------------------stop button action------------------------------- -
-//    - take stop time and date convert to millis, bring start time/date millis   -
-//    - from sharedPref, calculate duration, save all data to database and showRV -
+//    - (SOLVED)take stop time and date convert to millis, bring start time/date millis   -
+//    - from sharedPref, calculate duration,
+//
+//    - save all data to database and showRV -
 //    -----------------------------------------------------------------------------
 //
 
@@ -62,9 +70,12 @@ public class MainActivity extends AppCompatActivity {
     //Adapter
     EarningInfoAdapter earningInfoAdapter;
 
+    //SharedPrefrence
+    SharedPref sharedPref;
+
+
     //Spinner
-//    MaterialSpinner spSheetName; // old spinner
-    MaterialSpinner spinnerEarningNew;//imports jaredrummler.materialspinner.MaterialSpinner
+    MaterialSpinner spinnerEarningNew;
 
     //ArrayList
     ArrayList<EarningInfo> earningInfos = new ArrayList<>();
@@ -106,6 +117,17 @@ public class MainActivity extends AppCompatActivity {
         btStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                String startTime;
+                Calendar cc = Calendar.getInstance();
+                int mHour = cc.get(Calendar.HOUR_OF_DAY);
+                int mMinute = cc.get(Calendar.MINUTE);
+
+                sharedPref.setKeyStarted(true);
+                btStart.setEnabled(false);
+                spinnerEarningNew.setEnabled(false);
+
+                startTime = String.format(Locale.ENGLISH, "%02d:%02d", mHour, mMinute);
+                sharedPref.setStartTime(startTime);
 
             }
         });
@@ -115,7 +137,43 @@ public class MainActivity extends AppCompatActivity {
         btStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Date endDate = null;
+                Date startDate = null;
 
+                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+
+                Calendar cc = Calendar.getInstance();
+                int mHour = cc.get(Calendar.HOUR_OF_DAY);
+                int mMinute = cc.get(Calendar.MINUTE);
+                int mSecond = cc.get(Calendar.SECOND);
+
+                String endTime = String.format(Locale.ENGLISH, "%02d:%02d", mHour, mMinute);
+                String startTime = sharedPref.getStartTime();
+
+                try {
+                    endDate = timeFormat.parse(endTime);
+                    startDate = timeFormat.parse(startTime);
+
+                    long difference = endDate.getTime() - startDate.getTime();
+                    if(difference < 0)
+                    {
+                        Date dateMax = timeFormat.parse("24:00");
+                        Date dateMin = timeFormat.parse("00:00");
+                        difference=(dateMax.getTime() -startDate.getTime() )+(endDate.getTime()-dateMin.getTime());
+                    }
+                    int days = (int) (difference / (1000*60*60*24));
+                    int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
+                    int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+
+                    Toast.makeText(getApplicationContext(),"Time: " + hours + ":" + min, Toast.LENGTH_SHORT).show();
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+
+
+
+                btStart.setEnabled(true);
+                spinnerEarningNew.setEnabled(true);
             }
         });
 
@@ -139,16 +197,23 @@ public class MainActivity extends AppCompatActivity {
         //button
         btStart = (Button) findViewById(R.id.bt_start);
         btStop = (Button) findViewById(R.id.bt_stop);
+
         //recycleView
         rvEarnList = (RecyclerView) findViewById(R.id.rvEarnList);
+
         //textView
         tv_start_time = (TextView) findViewById(R.id.bt_start);
         tv_duration = (TextView) findViewById(R.id.tvDuration);
+
         //database
         database = new Database(getApplicationContext());
 
         //Spinner old
         spinnerEarningNew = (MaterialSpinner) findViewById(R.id.spinnerEarningNew);
+
+        //SharedPref
+        sharedPref = new SharedPref(getApplicationContext());
+
         //get data from database
         sheetInfos = database.getAllSheetInfo();
 

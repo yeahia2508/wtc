@@ -89,7 +89,6 @@ public class SheetSettings_Activity extends AppCompatActivity {
         initListener();
     }
 
-
     //-----------------------------------------ONCLICK HERE-----------------------------------------------
     private void initListener() {
         //---------------save button to save sheet information------------
