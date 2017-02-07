@@ -9,13 +9,13 @@ public class EarningInfo {
     public String sheet_uid;
     public String date_in_millis;
     public String start_time_millis;
-    public String duration;
+    public long duration;
     public String wages;
 
     public EarningInfo() {
     }
 
-    public EarningInfo(String sheet_uid, String date_in_millis, String start_time_millis, String duration, String wages) {
+    public EarningInfo(String sheet_uid, String date_in_millis, String start_time_millis, long duration, String wages) {
         this.sheet_uid = sheet_uid;
         this.date_in_millis = date_in_millis;
         this.start_time_millis = start_time_millis;
@@ -55,11 +55,11 @@ public class EarningInfo {
         this.start_time_millis = start_time_millis;
     }
 
-    public String getDuration() {
+    public long getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(long duration) {
         this.duration = duration;
     }
 

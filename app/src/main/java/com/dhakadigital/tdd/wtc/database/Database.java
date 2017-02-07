@@ -79,7 +79,7 @@ public class Database {
         statement.bindString(2, earningInfo.getSheet_uid());
         statement.bindString(3, earningInfo.getDate_in_millis());
         statement.bindString(4, earningInfo.getStart_time_millis());
-        statement.bindString(5, earningInfo.getDuration());
+        statement.bindLong(5, earningInfo.getDuration());
         statement.bindString(6, earningInfo.getWages());
         statement.execute();
 
@@ -127,6 +127,7 @@ public class Database {
         }
 
         return listOrgInfo;
+
     }
 
     //USER EARNING GET ALL INFO
@@ -140,7 +141,7 @@ public class Database {
                 EarningInfo earningInfo = new EarningInfo();
                 earningInfo.setDate_in_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
                 earningInfo.setStart_time_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
-                earningInfo.setDuration(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
+                earningInfo.setDuration(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
                 earningInfo.setWages(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
                 listEarningInfo.add(earningInfo);
             } while (cursor.moveToNext());
@@ -189,7 +190,7 @@ public class Database {
                 EarningInfo earningInfo = new EarningInfo();
                 earningInfo.setDate_in_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
                 earningInfo.setStart_time_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
-                earningInfo.setDuration(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
+                earningInfo.setDuration(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
                 earningInfo.setWages(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
                 listEarningInfo.add(earningInfo);
             } while (cursor.moveToNext());
@@ -218,7 +219,7 @@ public class Database {
     }
 
     //---get total of duration from wage table ---
-    public int getTotalDuration(int sheetId) {
+    public long getTotalDuration(int sheetId) {
         int totalDuration;
         Cursor mSumCursor = mDatabase.rawQuery("SELECT SUM(duration) FROM " + DatabaseHelper.TABLE_WAGE + " WHERE sheet_uid ='" + sheetId + "'", null);
         mSumCursor.moveToFirst();
@@ -302,7 +303,7 @@ public class Database {
                 C_E_SHEET_UID + " TEXT, " +
                 C_E_DATE + " TEXT, " +
                 C_E_START_TIME + " TEXT, " +
-                C_E_DURATION + " TEXT, " +
+                C_E_DURATION + ", " +
                 C_E_WAGES + " TEXT " +
                 ");";
 

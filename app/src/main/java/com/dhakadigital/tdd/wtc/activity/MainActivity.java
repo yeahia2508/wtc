@@ -54,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
     //String
     String sheetName;
     String sheetUID;
+    Double dailyWage;
 
     //TextView
     TextView tv_start_time, tv_duration;
@@ -150,30 +151,38 @@ public class MainActivity extends AppCompatActivity {
                 String endTime = String.format(Locale.ENGLISH, "%02d:%02d", mHour, mMinute);
                 String startTime = sharedPref.getStartTime();
 
+                long difference = 0;
+                int hours = 0, min = 0;
                 try {
                     endDate = timeFormat.parse(endTime);
                     startDate = timeFormat.parse(startTime);
 
-                    long difference = endDate.getTime() - startDate.getTime();
-                    if(difference < 0)
-                    {
+                    difference = endDate.getTime() - startDate.getTime();
+                    if (difference < 0) {
                         Date dateMax = timeFormat.parse("24:00");
                         Date dateMin = timeFormat.parse("00:00");
-                        difference=(dateMax.getTime() -startDate.getTime() )+(endDate.getTime()-dateMin.getTime());
+                        difference = (dateMax.getTime() - startDate.getTime()) + (endDate.getTime() - dateMin.getTime());
                     }
-                    int days = (int) (difference / (1000*60*60*24));
-                    int hours = (int) ((difference - (1000*60*60*24*days)) / (1000*60*60));
-                    int min = (int) (difference - (1000*60*60*24*days) - (1000*60*60*hours)) / (1000*60);
+                    int days = (int) (difference / (1000 * 60 * 60 * 24));
+                    hours = (int) ((difference - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
+                    min = (int) (difference - (1000 * 60 * 60 * 24 * days) - (1000 * 60 * 60 * hours)) / (1000 * 60);
 
-                    Toast.makeText(getApplicationContext(),"Time: " + hours + ":" + min, Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getApplicationContext(), "Time: " + hours + ":" + min, Toast.LENGTH_SHORT).show();
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
 
+                //TODO: please remember to change the date after we sleep
+                Double totalWage = dailyWage * (hours + (min / 60));
+                String sTotalWage = String.valueOf(totalWage);
+                //---EARNING INFO INSERTED INTO DATABASE HERE---
+                EarningInfo insertEarningInfo = new EarningInfo(sheetUID, "12/12/2012", startTime.toString(), difference, sTotalWage);
+                database.insertEarningInfo(insertEarningInfo);
 
-
+                updateRecycleViewAdapter(insertEarningInfo);
                 btStart.setEnabled(true);
                 spinnerEarningNew.setEnabled(true);
+
             }
         });
 
@@ -182,14 +191,25 @@ public class MainActivity extends AppCompatActivity {
         spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                String sheetName = sheetInfos.get(position).getName();
-                int sheetUID = sheetInfos.get(position).getId();
-                Snackbar.make(view, "position " + sheetUID + ", name " + sheetName, Snackbar.LENGTH_LONG).show();
-
+                int sheetUidFromDB = sheetInfos.get(position).getId();
+                sheetUID = String.valueOf(sheetUidFromDB);
+                dailyWage = sheetInfos.get(position).getHourRate();
             }
         });
 
     }//-----VIEW ON CLICK END------
+
+    private void updateRecycleViewAdapter(EarningInfo insertEarningInfo) {
+        if (earningInfoAdapter.getItemCount() > 1) {
+            earningInfoAdapter.add(earningInfoAdapter.getItemCount() - 1, insertEarningInfo);
+            earningInfoAdapter.notifyDataSetChanged();
+
+        } else {
+            earningInfoAdapter.add(0, insertEarningInfo);
+            earningInfoAdapter.notifyDataSetChanged();
+        }
+
+    }
 
 
     //-----------------------------------INITIALIZE VIEW HERE------------------------------------------------------------
@@ -219,21 +239,22 @@ public class MainActivity extends AppCompatActivity {
 
         initListener();
         setUpSpinner();
+        setUpEarningRecyclerAdapter(sheetUID);
     }
 
     //-------------------------------------------SPINNER-----------------------------------------------------------------
     private void setUpSpinner() {
         //getting data from database table sheetInfo
-        String[] sheetNames = new String[sheetInfos.size()];
-        for (int i = 0; i < sheetInfos.size(); i++) {
-            sheetNames[i] = sheetInfos.get(i).getName();
-            int sheetUidFromDB = sheetInfos.get(i).getId();
-            sheetUID = String.valueOf(sheetUidFromDB);
-        }
+//        String[] sheetNames = new String[sheetInfos.size()];
+//        for (int i = 0; i < sheetInfos.size(); i++) {
+////            sheetNames[i] = sheetInfos.get(i).getName();
+//            int sheetUidFromDB = sheetInfos.get(i).getId();
+//            sheetUID = String.valueOf(sheetUidFromDB);
+//            dailyWage = sheetInfos.get(i).getHourRate();
+//        }
 
         //--------------new spinner------------
         if (sheetInfos.size() != 0) {
-//            spinnerEarningNew.setItems(sheetNames);
             spinnerEarningNew.setItems(sheetInfos);
         } else {
             spinnerEarningNew.setItems("create a sheet first");

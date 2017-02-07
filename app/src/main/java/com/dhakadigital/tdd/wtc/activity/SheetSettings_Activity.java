@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -139,7 +138,6 @@ public class SheetSettings_Activity extends AppCompatActivity {
 
     private void setUpAdapter() {
         sheetInfos = database.getAllSheetInfo();
-        Log.e(TAG, "setUpAdapter getting data or not? " + sheetInfos.get(0).getName());
         //set up adapter
         sheetInfoAdapter = new SheetInfoAdapter(sheetInfos);
         LinearLayoutManager layoutmanager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);
