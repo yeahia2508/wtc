@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -23,19 +24,8 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 import java.util.ArrayList;
 
 public class SheetSettings_Activity extends AppCompatActivity {
+    private static final String TAG = "sheet info";
 
-//
-//    --------------------------issue to be fixed----------------------------------
-//    - When start activity for first time it will take to organizationActivity   -
-//    - -------------------------issues & bugs-------------------------------------
-//    - when start this activity for second time recycleview dosen't shows        -
-//    - anything. not only this, it shows only the data newly inserted by         -
-//    - saving data.                                                              -
-//    -                                                                           -
-//    -                                                                           -
-//    -                                                                           -
-//    -----------------------------------------------------------------------------
-//
 
     //-------------------------------------ALL VARIABLE & VIEW ----------------------------------------------------
     //String
@@ -149,7 +139,8 @@ public class SheetSettings_Activity extends AppCompatActivity {
 
 
     private void setUpAdapter() {
-
+        sheetInfos = database.getAllSheetInfo();
+        Log.e(TAG, "setUpAdapter getting data or not? " + sheetInfos.get(0).getName());
         //set up adapter
         sheetInfoAdapter = new SheetInfoAdapter(sheetInfos);
         LinearLayoutManager layoutmanager = new LinearLayoutManager(this, LinearLayoutManager.VERTICAL, false);

@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.OrgInfoAdapter;
 import com.dhakadigital.tdd.wtc.constants.Constants;
@@ -38,6 +39,7 @@ public class OrganizationActivitySettings extends AppCompatActivity {
 
     //ArrayList
     ArrayList<OrgInfo> orgInfos = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,7 +61,7 @@ public class OrganizationActivitySettings extends AppCompatActivity {
     private void initView() {
         //edittext
         etOrgName = (EditText) findViewById(R.id.etOriganizationName);
-        etOrgAddress  = (EditText) findViewById(R.id.etOrgAddress);
+        etOrgAddress = (EditText) findViewById(R.id.etOrgAddress);
         //button
         btSave = (Button) findViewById(R.id.btSave);
 
@@ -81,7 +83,7 @@ public class OrganizationActivitySettings extends AppCompatActivity {
                 String org_name = etOrgName.getText().toString();
                 String org_address = etOrgAddress.getText().toString();
 
-                if(!org_name.isEmpty() && !org_address.isEmpty()){
+                if (!org_name.isEmpty() && !org_address.isEmpty()) {
 
                     //setting data to database
                     OrgInfo orgInfo = new OrgInfo();
@@ -91,7 +93,7 @@ public class OrganizationActivitySettings extends AppCompatActivity {
                     database.insertOrgInfo(orgInfo);
 
                     updateAdapter(orgInfo);
-                }else {
+                } else {
                     Toast.makeText(getApplicationContext(), "Data Missing", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -110,7 +112,7 @@ public class OrganizationActivitySettings extends AppCompatActivity {
     }
 
 
-    private void setUpAdapter(){
+    private void setUpAdapter() {
         //get data form database
         orgInfos = database.getAllOrgInfo();
 

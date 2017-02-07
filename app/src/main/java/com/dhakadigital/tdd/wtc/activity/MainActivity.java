@@ -22,6 +22,7 @@ import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -38,7 +39,6 @@ public class MainActivity extends AppCompatActivity {
 //    - from sharedPref, calculate duration, save all data to database and showRV -
 //    -----------------------------------------------------------------------------
 //
-
 
 
     private static final String TAG = "main_activity";
@@ -70,6 +70,12 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<EarningInfo> earningInfos = new ArrayList<>();
     ArrayList<SheetInfo> sheetInfos;
 
+    //long
+    long date1Time, date2Time;
+
+    //Date
+    Date date1, date2;
+
     //-----------------------------------ON CREATE MAIN ACTIVITY---------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +97,42 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    //-----------------------------------ON CLICK LISTENERS--------------------------------------------------------------
+    private void initListener() {
+
+        //---------------start button on click--------------
+        btStart.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
+        //---------------stop button on click--------------
+        btStop.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+            }
+        });
+
+
+        //---------------Spinner item select listner--------------
+        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                String sheetName = sheetInfos.get(position).getName();
+                int sheetUID = sheetInfos.get(position).getId();
+                Snackbar.make(view, "position " + sheetUID + ", name " + sheetName, Snackbar.LENGTH_LONG).show();
+
+            }
+        });
+
+    }//-----VIEW ON CLICK END------
+
 
     //-----------------------------------INITIALIZE VIEW HERE------------------------------------------------------------
     private void initView() {
@@ -125,11 +167,11 @@ public class MainActivity extends AppCompatActivity {
         }
 
         //--------------new spinner------------
-        if (sheetInfos.size()!=0){
+        if (sheetInfos.size() != 0) {
 //            spinnerEarningNew.setItems(sheetNames);
             spinnerEarningNew.setItems(sheetInfos);
-        }else {
-        spinnerEarningNew.setItems("create a sheet first");
+        } else {
+            spinnerEarningNew.setItems("create a sheet first");
         }
     }
 
@@ -150,44 +192,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //-----------------------------------ON CLICK LISTENERS--------------------------------------------------------------
-    private void initListener() {
-
-        //---------------stop button on click--------------
-//        btStop.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                int spPosition = spSheetName.getSelectedItemPosition();
-//                String sheetUID = spnr_adapter.getItem(spPosition-1);
-//
-//                //TODO: it was demo, delete it
-//                EarningInfo earningInfo = new EarningInfo(1);
-//                earningInfos.add(earningInfo);
-//
-//                database.insertEarningInfo(earningInfo);
-//            }
-//        });
-
-
-
-        //---------------Spinner item select listner--------------
-        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                String sheetName = sheetInfos.get(position).getName();
-                int sheetUID = sheetInfos.get(position).getId();
-                Snackbar.make(view,"position "+sheetUID+", name "+sheetName, Snackbar.LENGTH_LONG).show();
-
-            }
-        });
-
-    }//-----VIEW ON CLICK END------
-
-
-
-
-
-    //------------------------------------------ACTION MENU-------------------------------------------------
+    //-------------------------ACTION MENU-------------NO OTHER USE----------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.

@@ -6,8 +6,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
+
 import java.util.ArrayList;
 
 /**
@@ -15,40 +17,22 @@ import java.util.ArrayList;
  */
 
 public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddSheetInfoVH> {
-    //arrays for two view and pojo model
-//TODO: please read the note (^_^)
-//    -------------------------------------------------------------------
-//    - boss i thing we need two different adapter for this.            -
-//    - there is different arraylist and different id of all layout     -
-//    - components. so i think it will be convinient if we use two      -
-//    - different adapter. meanwhile if they require something else     -
-//    - later than it will be another pera to do it again. i made       -
-//    - another pojo for "SheetSettingsActivity" and database too.      -
-//    - Also i made some constructor and database insert & get method.  -
-//    - Sorry boss. Happy Coding and bue for today. see you night.      -
-//    -                 IN SHA ALLAH                                    -
-//    -------------------------------------------------------------------
+
 
     private ArrayList<SheetInfo> sheetInfos = new ArrayList<>();
 
     private OnItemClickListener onItemClickListener;
     public String activityName;
 
-    public SheetInfoAdapter(ArrayList<SheetInfo> orgInfos){
+    public SheetInfoAdapter(ArrayList<SheetInfo> sheetInfos) {
         this.sheetInfos = sheetInfos;
     }
-
-
-    /*public SheetInfoAdapter(ArrayList<SheetInfo> sheetInfos, String activityName){
-        this.sheetInfos = sheetInfos;
-        this.activityName = activityName;
-    }*/
 
 
     @Override
     public AddSheetInfoVH onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recyclerview_sheet_info, parent, false);
+                .inflate(R.layout.recyclerview_sheet_info, parent, false);
 
         return new AddSheetInfoVH(itemView);
     }
@@ -56,7 +40,6 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
 
     @Override
     public void onBindViewHolder(AddSheetInfoVH holder, int position) {
-        //TODO: boss if this is here will it through null pointer when im in sheetSettingsActivity?
 
         holder.tvSheetName.setText(sheetInfos.get(position).getName());
         holder.tvOrgName.setText(sheetInfos.get(position).getOrg_name());
@@ -64,17 +47,17 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
         holder.tvHourRate.setText("$" + sheetInfos.get(position).getHourRate());
     }
 
-    public void add (int position, SheetInfo sheetInfo){
+    public void add(int position, SheetInfo sheetInfo) {
         sheetInfos.add(position, sheetInfo);
         notifyItemInserted(position);
     }
 
-    public void delete(int position){
+    public void delete(int position) {
         sheetInfos.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void reAddOrgInfo(ArrayList<SheetInfo> addSheetInfo){
+    public void reAddOrgInfo(ArrayList<SheetInfo> addSheetInfo) {
         sheetInfos = addSheetInfo;
         notifyItemRangeChanged(0, addSheetInfo.size());
         notifyDataSetChanged();
@@ -86,7 +69,7 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
     }
 
     public class AddSheetInfoVH extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView tvOrgName, tvOrgAddress,tvHourRate;
+        TextView tvOrgName, tvOrgAddress, tvHourRate;
         TextView tvSheetName;
         ImageView ivDelete, ivEdit;
 
@@ -109,34 +92,36 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
         @Override
         public void onClick(View v) {
 
-            if(v.getId() == ivEdit.getId()){
-                if(onItemClickListener!=null){
-                    onItemClickListener.onEditIconClick(v,getAdapterPosition());
+            if (v.getId() == ivEdit.getId()) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onEditIconClick(v, getAdapterPosition());
 
                 }
             }
 
-            if(v.getId() == ivDelete.getId()){
-                if(onItemClickListener!=null){
-                    onItemClickListener.onDeleteIconClick(v,getAdapterPosition());
+            if (v.getId() == ivDelete.getId()) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onDeleteIconClick(v, getAdapterPosition());
 
                 }
             }
 
-            if (onItemClickListener != null){
-                onItemClickListener.onItemClick(v,getAdapterPosition());
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(v, getAdapterPosition());
             }
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view , int position);
+        void onItemClick(View view, int position);
+
         void onDeleteIconClick(View view, int position);
+
         void onEditIconClick(View view, int position);
 
     }
 
-    public void SetOnItemClickListener(final OnItemClickListener onItemClickListener){
+    public void SetOnItemClickListener(final OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 }
