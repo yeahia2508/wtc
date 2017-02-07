@@ -8,28 +8,26 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
+import android.view.View;
 import android.widget.Button;
-import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.EarningInfoAdapter;
 import com.dhakadigital.tdd.wtc.database.Database;
 import com.dhakadigital.tdd.wtc.pojo.EarningInfo;
-import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
 import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
+import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.ArrayList;
 
-import fr.ganfra.materialspinner.MaterialSpinner;
-
 public class MainActivity extends AppCompatActivity {
+
+    private static final String TAG = "main_activity";
+    //------------------------------------------VARIABLES & VIEW----------------------------------------------------------
     //TextView
     TextView tv_start_time, tv_duration;
 
@@ -44,13 +42,16 @@ public class MainActivity extends AppCompatActivity {
 
     //Adapter
     EarningInfoAdapter earningInfoAdapter;
-    ArrayAdapter<String> spnr_adapter;
 
     //Spinner
-    MaterialSpinner spSheetName;
+//    MaterialSpinner spSheetName; // old spinner
+    MaterialSpinner spinnerEarningNew;//imports jaredrummler.materialspinner.MaterialSpinner
 
     //ArrayList
     ArrayList<EarningInfo> earningInfos = new ArrayList<>();
+
+
+    //-----------------------------------ON CREATE MAIN ACTIVITY---------------------------------------------------------
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    //-----------------------------------INITIALIZE VIEW HERE------------------------------------------------------------
     private void initView() {
         //button
         btStart = (Button) findViewById(R.id.bt_start);
@@ -84,27 +86,67 @@ public class MainActivity extends AppCompatActivity {
         //database
         database = new Database(getApplicationContext());
 
-        //Spinner
-        spSheetName = (MaterialSpinner) findViewById(R.id.spnr_sheetName);
-        spSheetName.setSelection(1);
+        //Spinner old
+        spinnerEarningNew = (MaterialSpinner) findViewById(R.id.spinnerEarningNew);
 
         initListener();
         setUpSpinner();
     }
 
+    //-------------------------------------------SPINNER-----------------------------------------------------------------
     private void setUpSpinner() {
-        ArrayList<SheetInfo>  sheetInfos = database.getAllSheetInfo();
+        //getting data from database table sheetInfo
+        final ArrayList<SheetInfo> sheetInfos = database.getAllSheetInfo();
         String[] sheetNames = new String[sheetInfos.size()];
-        for (int i = 0; i < sheetInfos.size(); i++){
+        for (int i = 0; i < sheetInfos.size(); i++) {
             sheetNames[i] = sheetInfos.get(i).getName();
+            int position = sheetInfos.get(i).getId();
+            Log.e(TAG, "from db sheet name "+sheetNames[i] );
+            Log.e(TAG, "from db sheet id/position "+position );
         }
-        spnr_adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, sheetNames);
-        spnr_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spSheetName.setAdapter(spnr_adapter);
+
+        //--------------new spinner------------
+        if (sheetInfos.size()!=0){
+//            spinnerEarningNew.setItems(sheetNames);
+            spinnerEarningNew.setItems(sheetInfos);
+        }else {
+        spinnerEarningNew.setItems("create a sheet first");
+        }
+        //---------------Spinner item select listner--------------
+        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                String sheetName = sheetInfos.get(position).getName();
+                int sheetUID = sheetInfos.get(position).getId();
+                Snackbar.make(view,"position "+sheetUID+", name "+sheetName, Snackbar.LENGTH_LONG).show();
+
+            }
+        });
+
+//        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<ArrayList<SheetInfo>>() {
+//
+//            @Override
+//            public void onItemSelected(MaterialSpinner view, int position, long id, ArrayList<SheetInfo> item) {
+//                String sheetName = sheetInfos.get(position).getName();
+//                int sheetUID = sheetInfos.get(position).getId();
+//                Snackbar.make(view,"position "+sheetUID+", name "+sheetName, Snackbar.LENGTH_LONG).show();
+//            }
+//
+////            @Override
+////            public void onItemSelected(MaterialSpinner view, int position, long id, Integer item) {
+////
+////            }
+//
+////            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+//////                Snackbar.make(view, "Clicked " + position, Snackbar.LENGTH_LONG).show();
+//////                Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
+////            }
+//        });
     }
 
+    //------------------------------------------RECYCLER VIEW------------------------------------------------------------
     //this adapter will show item when something is selected in spinner
-    private void setUpAdapter(String sheetUid) {
+    private void setUpEarningRecyclerAdapter(String sheetUid) {
         //get data from database
 //        earningInfos = database.getAllEarningInfo(); //for whole database value and we don't need that
         earningInfos = database.getEarningInfoBySheet(sheetUid);
@@ -118,6 +160,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+
+    //-----------------------------------ON CLICK LISTENERS--------------------------------------------------------------
     private void initListener() {
 
         //---------------stop button on click--------------
@@ -128,36 +172,33 @@ public class MainActivity extends AppCompatActivity {
 //                String sheetUID = spnr_adapter.getItem(spPosition-1);
 //                Toast.makeText(MainActivity.this, "from database ", Toast.LENGTH_SHORT).show();
 //
-//
 //                //TODO: it was demo, delete it
 //                EarningInfo earningInfo = new EarningInfo("","later","14","00");
 //                earningInfos.add(earningInfo);
 //
 //                database.insertEarningInfo(earningInfo);
-//
-//
 //            }
 //        });
 
-        //---------------Spinner item select listner--------------
-        spSheetName.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                Toast.makeText(MainActivity.this, "one item selected now seeing"+position, Toast.LENGTH_SHORT).show();
 
-//                int spnrPosition = spSheetName.getSelectedItemPosition();
-//                setUpAdapter(database.getAllEarningInfo().get(spnrPosition).getSheet_uid());
 
-            }
+//
+//        //---------------Spinner item select listner--------------
+//        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
+//
+//            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
+//                Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this, "items array position "+position+"\nlong id is "+id, Toast.LENGTH_SHORT).show();
+//            }
+//        });
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-                //TODO: set an error report if nothing is selected in spinner
-            }
-        });
+    }//-----VIEW ON CLICK END------
 
-    }
 
+
+
+
+    //------------------------------------------ACTION MENU-------------------------------------------------
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -167,23 +208,29 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //Intent
         Intent action_intent;
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_sheet_settings) {
-            action_intent = new Intent(this,SheetSettings_Activity.class);
+            action_intent = new Intent(this, SheetSettings_Activity.class);
             startActivity(action_intent);
         }
         if (id == R.id.action_organization_settings) {
-            action_intent = new Intent(this,Setting.class);
+            action_intent = new Intent(this, OrganizationActivitySettings.class);
             startActivity(action_intent);
         }
-
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public String toString() {
+        return super.toString();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        setUpSpinner();
     }
 }

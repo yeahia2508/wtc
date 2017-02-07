@@ -48,7 +48,7 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
     @Override
     public AddSheetInfoVH onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recyclerview_sheet_earning, parent, false);
+                    .inflate(R.layout.recyclerview_sheet_info, parent, false);
 
         return new AddSheetInfoVH(itemView);
     }

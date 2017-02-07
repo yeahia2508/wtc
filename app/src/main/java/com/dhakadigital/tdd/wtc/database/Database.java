@@ -112,11 +112,13 @@ public class Database  {
         ArrayList<OrgInfo> listOrgInfo = new ArrayList<>();
         Cursor cursor;
         cursor = mDatabase.query(DatabaseHelper.TABLE_ORGANIZATION_INFO,org_info_column,
-                null,null,null,null,DatabaseHelper.C_UID+" DESC");
+                null,null,null,null,DatabaseHelper.C_UID+" ASC");
+//        cursor = mDatabase.rawQuery("SELECT * FROM "+DatabaseHelper.TABLE_ORGANIZATION_INFO+" ORDER BY "+DatabaseHelper.C_UID+" ASC",null);
 
         if(cursor != null && cursor.moveToFirst()){
             do{
                 OrgInfo orgInfo = new OrgInfo();
+                orgInfo.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.C_UID)));
                 orgInfo.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_NAME)));
                 orgInfo.setAddress(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_ADDRESS)));
                 listOrgInfo.add(orgInfo);
@@ -131,7 +133,7 @@ public class Database  {
     public ArrayList<EarningInfo> getAllEarningInfo(){
         ArrayList<EarningInfo> listEarningInfo = new ArrayList<>();
         Cursor cursor;
-        cursor = mDatabase.query(DatabaseHelper.TABLE_WAGE, user_earning_info_column,null,null,null,null,DatabaseHelper.C_E_UID+" DESC");
+        cursor = mDatabase.query(DatabaseHelper.TABLE_WAGE, user_earning_info_column,null,null,null,null,DatabaseHelper.C_E_UID+" ASC");
 
         if (cursor != null && cursor.moveToFirst()){
             do{
@@ -150,11 +152,12 @@ public class Database  {
     public ArrayList<SheetInfo> getAllSheetInfo(){
         ArrayList<SheetInfo> listSheetInfo = new ArrayList<>();
         Cursor cursor;
-        cursor = mDatabase.query(DatabaseHelper.TABLE_SHEET, sheet_info_column,null,null,null,null,DatabaseHelper.C_S_UID+" DESC");
+        cursor = mDatabase.query(DatabaseHelper.TABLE_SHEET, sheet_info_column,null,null,null,null,DatabaseHelper.C_S_UID+" ASC");
 
         if (cursor != null && cursor.moveToFirst()){
             do{
                 SheetInfo sheetInfo = new SheetInfo();
+                sheetInfo.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.C_S_UID)));
                 sheetInfo.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_NAME)));
                 sheetInfo.setOrg_uid(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_ORG_UID)));
                 sheetInfo.setOrg_name(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_ORG_NAME)));

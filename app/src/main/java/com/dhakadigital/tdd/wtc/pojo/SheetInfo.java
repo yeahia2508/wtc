@@ -12,6 +12,25 @@ public class SheetInfo {
     private String org_address;
     private Double hourRate;
 
+
+    //----------------------------CONSTRUCTORS-----------------------------------
+
+
+    public SheetInfo() {
+    }
+
+    public SheetInfo(String name, String org_uid, String org_name, String org_address, Double hourRate) {
+        this.name = name;
+        this.org_uid = org_uid;
+        this.org_name = org_name;
+        this.org_address = org_address;
+        this.hourRate = hourRate;
+    }
+
+
+    //----------------------------GETTERS & SETTERS-----------------------------------
+
+
     public Double getHourRate() {
         return hourRate;
     }
@@ -19,22 +38,6 @@ public class SheetInfo {
     public void setHourRate(Double hourRate) {
         this.hourRate = hourRate;
     }
-
-    //----------------------------CONSTRUCTORS-----------------------------------
-    public SheetInfo() {
-    }
-
-    public SheetInfo(String name) {
-        this.name = name;
-    }
-
-    public SheetInfo(String name, String org_name, String org_address) {
-        this.name = name;
-        this.org_name = org_name;
-        this.org_address = org_address;
-    }
-
-    //----------------------------GETTERS & SETTERS-----------------------------------
 
     public String getOrg_name() {
         return org_name;
@@ -74,5 +77,10 @@ public class SheetInfo {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return name;
     }
 }

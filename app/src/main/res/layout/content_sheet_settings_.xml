@@ -20,23 +20,10 @@
         android:layout_height="wrap_content"
         android:hint="Insert Working Sheet Name:"/>
 
-    <fr.ganfra.materialspinner.MaterialSpinner
+    <com.jaredrummler.materialspinner.MaterialSpinner
         android:id="@+id/spOrganiztion"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        app:ms_multiline="false"
-        app:ms_hint="Organiztion Name"
-        app:ms_enableFloatingLabel="false"
-        app:ms_enableErrorLabel="false"
-        app:ms_floatingLabelText="floating label"
-        app:ms_baseColor="@color/colorPrimary"
-        app:ms_highlightColor="@color/colorPrimary"
-        app:ms_thickness="2dp"
-        app:ms_hintColor="@color/colorAccent"
-        app:ms_arrowColor="@color/colorAccent"
-        app:ms_arrowSize="16dp"
-        app:ms_alignLabels="false"
-        app:ms_floatingLabelColor="@color/colorAccent" />
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <EditText
         android:id="@+id/etSalaryRate"
@@ -55,7 +42,7 @@
         android:id="@+id/rvSheetList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/recyclerview_sheet_earning" />
+        tools:listitem="@layout/recyclerview_sheet_info" />
 
 
 </LinearLayout>

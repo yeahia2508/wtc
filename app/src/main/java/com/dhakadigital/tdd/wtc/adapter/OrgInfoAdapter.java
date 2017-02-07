@@ -61,10 +61,10 @@ public class OrgInfoAdapter extends RecyclerView.Adapter<OrgInfoAdapter.AddOrgIn
         View itemView;
         if(activityName.equals(Constants.ACTIVITY_ORG_SETTING)){
             itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recycleview_org, parent, false);
+                    .inflate(R.layout.recycleview_org_info, parent, false);
         }else {
             itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recyclerview_sheet_earning, parent, false);
+                    .inflate(R.layout.recyclerview_sheet_info, parent, false);
         }
         return new AddOrgInfoVH(itemView);
     }

@@ -11,28 +11,14 @@
     tools:showIn="@layout/activity_main"
     tools:context="com.dhakadigital.tdd.wtc.activity.MainActivity">
 
-    <fr.ganfra.materialspinner.MaterialSpinner
-        android:id="@+id/spnr_sheetName"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        app:ms_multiline="false"
-        app:ms_hint="Sheet Name"
-        app:ms_enableFloatingLabel="false"
-        app:ms_enableErrorLabel="false"
-        app:ms_floatingLabelText="floating label"
-        app:ms_baseColor="@color/colorPrimary"
-        app:ms_highlightColor="@color/colorPrimary"
-        app:ms_thickness="2dp"
-        app:ms_hintColor="@color/colorAccent"
-        app:ms_arrowColor="@color/colorAccent"
-        app:ms_arrowSize="16dp"
-        app:ms_alignLabels="false"
-        app:ms_floatingLabelColor="@color/colorAccent" />
-
+    <com.jaredrummler.materialspinner.MaterialSpinner
+        android:id="@+id/spinnerEarningNew"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <TableLayout
         android:layout_margin="4sp"
-        android:layout_below="@id/spnr_sheetName"
+        android:layout_below="@id/spinnerEarningNew"
         android:id="@+id/tbl_user_property"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -99,7 +85,7 @@
         android:id="@+id/rvEarnList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:listitem="@layout/recycleview_user" />
+        tools:listitem="@layout/recycleview_user_earning" />
     <LinearLayout
 
         android:layout_width="match_parent"

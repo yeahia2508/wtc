@@ -19,7 +19,7 @@ import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
 
 import java.util.ArrayList;
 
-public class Setting extends AppCompatActivity {
+public class OrganizationActivitySettings extends AppCompatActivity {
 
     //Edittext
     EditText etOrgName, etOrgAddress;
@@ -41,7 +41,7 @@ public class Setting extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_setting);
+        setContentView(R.layout.activity_organization_setting);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 

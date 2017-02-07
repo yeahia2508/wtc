@@ -26,7 +26,7 @@ public class EarningInfoAdapter extends RecyclerView.Adapter<EarningInfoAdapter.
     @Override
     public EarningInfoAdapter.AddEarningInfoVH onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.recycleview_user, parent, false);
+                .inflate(R.layout.recycleview_user_earning, parent, false);
 
         return new EarningInfoAdapter.AddEarningInfoVH(itemView);
     }

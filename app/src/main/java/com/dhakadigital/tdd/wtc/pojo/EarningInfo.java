@@ -70,4 +70,5 @@ public class EarningInfo {
     public void setWages(String wages) {
         this.wages = wages;
     }
+
 }
