@@ -8,7 +8,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,8 +25,28 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+
+//
+//    --------------------------issue to be fixed----------------------------------
+//    - we have to save data in shared preferance when press in start             -
+//    - ------------------------start button action------------------------------ -
+//    - take start time and date, conver date to milli second, save date and      -
+//    - millis to, shared preferances, disable spinner and start button           -
+//    - saving data.                                                              -
+//    - ------------------------stop button action------------------------------- -
+//    - take stop time and date convert to millis, bring start time/date millis   -
+//    - from sharedPref, calculate duration, save all data to database and showRV -
+//    -----------------------------------------------------------------------------
+//
+
+
+
     private static final String TAG = "main_activity";
     //------------------------------------------VARIABLES & VIEW----------------------------------------------------------
+    //String
+    String sheetName;
+    String sheetUID;
+
     //TextView
     TextView tv_start_time, tv_duration;
 
@@ -49,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
 
     //ArrayList
     ArrayList<EarningInfo> earningInfos = new ArrayList<>();
-
+    ArrayList<SheetInfo> sheetInfos;
 
     //-----------------------------------ON CREATE MAIN ACTIVITY---------------------------------------------------------
     @Override
@@ -88,6 +107,8 @@ public class MainActivity extends AppCompatActivity {
 
         //Spinner old
         spinnerEarningNew = (MaterialSpinner) findViewById(R.id.spinnerEarningNew);
+        //get data from database
+        sheetInfos = database.getAllSheetInfo();
 
         initListener();
         setUpSpinner();
@@ -96,13 +117,11 @@ public class MainActivity extends AppCompatActivity {
     //-------------------------------------------SPINNER-----------------------------------------------------------------
     private void setUpSpinner() {
         //getting data from database table sheetInfo
-        final ArrayList<SheetInfo> sheetInfos = database.getAllSheetInfo();
         String[] sheetNames = new String[sheetInfos.size()];
         for (int i = 0; i < sheetInfos.size(); i++) {
             sheetNames[i] = sheetInfos.get(i).getName();
-            int position = sheetInfos.get(i).getId();
-            Log.e(TAG, "from db sheet name "+sheetNames[i] );
-            Log.e(TAG, "from db sheet id/position "+position );
+            int sheetUidFromDB = sheetInfos.get(i).getId();
+            sheetUID = String.valueOf(sheetUidFromDB);
         }
 
         //--------------new spinner------------
@@ -112,36 +131,6 @@ public class MainActivity extends AppCompatActivity {
         }else {
         spinnerEarningNew.setItems("create a sheet first");
         }
-        //---------------Spinner item select listner--------------
-        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                String sheetName = sheetInfos.get(position).getName();
-                int sheetUID = sheetInfos.get(position).getId();
-                Snackbar.make(view,"position "+sheetUID+", name "+sheetName, Snackbar.LENGTH_LONG).show();
-
-            }
-        });
-
-//        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<ArrayList<SheetInfo>>() {
-//
-//            @Override
-//            public void onItemSelected(MaterialSpinner view, int position, long id, ArrayList<SheetInfo> item) {
-//                String sheetName = sheetInfos.get(position).getName();
-//                int sheetUID = sheetInfos.get(position).getId();
-//                Snackbar.make(view,"position "+sheetUID+", name "+sheetName, Snackbar.LENGTH_LONG).show();
-//            }
-//
-////            @Override
-////            public void onItemSelected(MaterialSpinner view, int position, long id, Integer item) {
-////
-////            }
-//
-////            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-//////                Snackbar.make(view, "Clicked " + position, Snackbar.LENGTH_LONG).show();
-//////                Toast.makeText(MainActivity.this, "", Toast.LENGTH_SHORT).show();
-////            }
-//        });
     }
 
     //------------------------------------------RECYCLER VIEW------------------------------------------------------------
@@ -170,10 +159,9 @@ public class MainActivity extends AppCompatActivity {
 //            public void onClick(View v) {
 //                int spPosition = spSheetName.getSelectedItemPosition();
 //                String sheetUID = spnr_adapter.getItem(spPosition-1);
-//                Toast.makeText(MainActivity.this, "from database ", Toast.LENGTH_SHORT).show();
 //
 //                //TODO: it was demo, delete it
-//                EarningInfo earningInfo = new EarningInfo("","later","14","00");
+//                EarningInfo earningInfo = new EarningInfo(1);
 //                earningInfos.add(earningInfo);
 //
 //                database.insertEarningInfo(earningInfo);
@@ -182,15 +170,16 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-//
-//        //---------------Spinner item select listner--------------
-//        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
-//
-//            @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-//                Snackbar.make(view, "Clicked " + item, Snackbar.LENGTH_LONG).show();
-//                Toast.makeText(MainActivity.this, "items array position "+position+"\nlong id is "+id, Toast.LENGTH_SHORT).show();
-//            }
-//        });
+        //---------------Spinner item select listner--------------
+        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
+                String sheetName = sheetInfos.get(position).getName();
+                int sheetUID = sheetInfos.get(position).getId();
+                Snackbar.make(view,"position "+sheetUID+", name "+sheetName, Snackbar.LENGTH_LONG).show();
+
+            }
+        });
 
     }//-----VIEW ON CLICK END------
 
