@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,9 +56,13 @@ public class MainActivity extends AppCompatActivity {
     String sheetName;
     String sheetUID;
     Double dailyWage;
+    String currentStartTime,currentEndTime;
+
+    //boolean
+    boolean spinnerSheetSelectedOrNot=false;
 
     //TextView
-    TextView tv_start_time, tv_duration;
+    TextView tv_start_time, tv_duration,tv_bottom_panel;
 
     //Button
     Button btStart, btStop;
@@ -82,11 +87,11 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<EarningInfo> earningInfos = new ArrayList<>();
     ArrayList<SheetInfo> sheetInfos;
 
-    //long
-    long date1Time, date2Time;
 
-    //Date
-    Date date1, date2;
+    SimpleDateFormat timeFormat;
+    Calendar cc;
+    SimpleDateFormat df;
+
 
     //-----------------------------------ON CREATE MAIN ACTIVITY---------------------------------------------------------
     @Override
@@ -100,14 +105,8 @@ public class MainActivity extends AppCompatActivity {
 
 
         initView();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        //TODO: Log please remove it
+        Log.e(TAG, "onClick: stop button spinner selected or not position "+spinnerSheetSelectedOrNot );
     }
 
 
@@ -123,8 +122,14 @@ public class MainActivity extends AppCompatActivity {
                 int mHour = cc.get(Calendar.HOUR_OF_DAY);
                 int mMinute = cc.get(Calendar.MINUTE);
 
+                //text view shows start time
+                currentStartTime = timeFormat.format(cc.getTime());
+                tv_duration.setText("");
+                tv_start_time.setText("Start Time:"+ currentStartTime);
+
                 sharedPref.setKeyStarted(true);
                 btStart.setEnabled(false);
+                btStop.setEnabled(true);
                 spinnerEarningNew.setEnabled(false);
 
                 startTime = String.format(Locale.ENGLISH, "%02d:%02d", mHour, mMinute);
@@ -138,51 +143,74 @@ public class MainActivity extends AppCompatActivity {
         btStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date endDate = null;
-                Date startDate = null;
+                if (!spinnerSheetSelectedOrNot){
+                    Snackbar.make(view,"Please select a sheet first",Snackbar.LENGTH_SHORT);
+                    //TODO: Log please remove it
+                    Log.e(TAG, "onClick: stop button spinner selected or not position "+spinnerSheetSelectedOrNot );
+                }else {
+                    Date endDate = null;
+                    Date startDate = null;
 
-                SimpleDateFormat timeFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+                    //TODO: Log please remove it
+                    Log.e(TAG, "onClick: stop button spinner selected or not position "+spinnerSheetSelectedOrNot );
 
-                Calendar cc = Calendar.getInstance();
-                int mHour = cc.get(Calendar.HOUR_OF_DAY);
-                int mMinute = cc.get(Calendar.MINUTE);
-                int mSecond = cc.get(Calendar.SECOND);
+                    //text view shows start time
+                    tv_start_time.setText("");
+                    String formattedDate = df.format(cc.getTime());
+                    currentEndTime = timeFormat.format(cc.getTime());
+                    String startTimeEndTime = currentStartTime + "/" + currentEndTime;
 
-                String endTime = String.format(Locale.ENGLISH, "%02d:%02d", mHour, mMinute);
-                String startTime = sharedPref.getStartTime();
+                    int mHour = cc.get(Calendar.HOUR_OF_DAY);
+                    int mMinute = cc.get(Calendar.MINUTE);
+                    int mSecond = cc.get(Calendar.SECOND);
 
-                long difference = 0;
-                int hours = 0, min = 0;
-                try {
-                    endDate = timeFormat.parse(endTime);
-                    startDate = timeFormat.parse(startTime);
+                    String endTime = String.format(Locale.ENGLISH, "%02d:%02d", mHour, mMinute);
+                    String startTime = sharedPref.getStartTime();
 
-                    difference = endDate.getTime() - startDate.getTime();
-                    if (difference < 0) {
-                        Date dateMax = timeFormat.parse("24:00");
-                        Date dateMin = timeFormat.parse("00:00");
-                        difference = (dateMax.getTime() - startDate.getTime()) + (endDate.getTime() - dateMin.getTime());
+                    long difference = 0;
+                    int hours = 0, min = 0;
+                    try {
+                        endDate = timeFormat.parse(endTime);
+                        startDate = timeFormat.parse(startTime);
+
+                        difference = endDate.getTime() - startDate.getTime();
+                        if (difference < 0) {
+                            Date dateMax = timeFormat.parse("24:00");
+                            Date dateMin = timeFormat.parse("00:00");
+                            difference = (dateMax.getTime() - startDate.getTime()) + (endDate.getTime() - dateMin.getTime());
+                        }
+                        int days = (int) (difference / (1000 * 60 * 60 * 24));
+                        hours = (int) ((difference - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
+                        min = (int) (difference - (1000 * 60 * 60 * 24 * days) - (1000 * 60 * 60 * hours)) / (1000 * 60);
+
+                        Toast.makeText(getApplicationContext(), "Time: " + hours + ":" + min, Toast.LENGTH_SHORT).show();
+                    } catch (ParseException e) {
+                        e.printStackTrace();
                     }
-                    int days = (int) (difference / (1000 * 60 * 60 * 24));
-                    hours = (int) ((difference - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
-                    min = (int) (difference - (1000 * 60 * 60 * 24 * days) - (1000 * 60 * 60 * hours)) / (1000 * 60);
 
-                    Toast.makeText(getApplicationContext(), "Time: " + hours + ":" + min, Toast.LENGTH_SHORT).show();
-                } catch (ParseException e) {
-                    e.printStackTrace();
+                    String totalWage = String.valueOf(dailyWage * (hours + (min / 60)));//total wage
+
+
+                    //showing duration in textView
+                    tv_duration.setText("Duration: " + difference);
+                    //TODO: Log test clear the log
+                    Log.e(TAG, "onDatabase insert: \ndailyWage = " + dailyWage + "\nHour = " + hours + "\nMinute = " + min + "\n-------------" +
+                            "totalWage = " + totalWage + "\n\n\nreview information going in database\n"+
+                    "sheet UID = "+sheetUID+"\nDate = "+formattedDate+"\nStart & End time = "+startTimeEndTime+"\n" +
+                            "Duration = "+difference+"\nTotal Wage = "+totalWage);
+//                String sTotalWage = String.valueOf(totalWage);
+                    //---EARNING INFO INSERTED INTO DATABASE HERE---
+                    EarningInfo insertEarningInfo = new EarningInfo(sheetUID, formattedDate, startTimeEndTime, difference, totalWage);
+                    //TODO:all wages are same : showing toast
+                    Toast.makeText(MainActivity.this, "totalDuration: " + difference + "\nwage from Sheet: " + dailyWage +
+                            "totalCalculated wage: " + totalWage, Toast.LENGTH_LONG).show();
+                    database.insertEarningInfo(insertEarningInfo);
+
+                    updateRecycleViewAdapter(insertEarningInfo);
+                    btStart.setEnabled(true);
+                    spinnerEarningNew.setEnabled(true);
+
                 }
-
-                //TODO: please remember to change the date after we sleep
-                Double totalWage = dailyWage * (hours + (min / 60));
-                String sTotalWage = String.valueOf(totalWage);
-                //---EARNING INFO INSERTED INTO DATABASE HERE---
-                EarningInfo insertEarningInfo = new EarningInfo(sheetUID, "12/12/2012", startTime.toString(), difference, sTotalWage);
-                database.insertEarningInfo(insertEarningInfo);
-
-                updateRecycleViewAdapter(insertEarningInfo);
-                btStart.setEnabled(true);
-                spinnerEarningNew.setEnabled(true);
-
             }
         });
 
@@ -194,10 +222,18 @@ public class MainActivity extends AppCompatActivity {
                 int sheetUidFromDB = sheetInfos.get(position).getId();
                 sheetUID = String.valueOf(sheetUidFromDB);
                 dailyWage = sheetInfos.get(position).getHourRate();
+                spinnerSheetSelectedOrNot=true;
+                setUpEarningRecyclerAdapter(sheetUID);
+                int sheetUIDinINT = Integer.valueOf(sheetUID);
+                String totalOfDayDurationMoney="Total Day: "+database.getTotalDayCount(sheetUIDinINT)+
+                        "  Duration: "+database.getTotalDuration(sheetUIDinINT)+"  Wages: "+database.getTotalWage(sheetUIDinINT);
+                tv_bottom_panel.setText(totalOfDayDurationMoney);
             }
         });
 
-    }//-----VIEW ON CLICK END------
+    }
+
+    //-----VIEW ON CLICK END------
 
     private void updateRecycleViewAdapter(EarningInfo insertEarningInfo) {
         if (earningInfoAdapter.getItemCount() > 1) {
@@ -214,16 +250,24 @@ public class MainActivity extends AppCompatActivity {
 
     //-----------------------------------INITIALIZE VIEW HERE------------------------------------------------------------
     private void initView() {
+
+
+        timeFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
+        cc = Calendar.getInstance();
+        df = new SimpleDateFormat("dd-MMM-yyyy");
+
         //button
         btStart = (Button) findViewById(R.id.bt_start);
         btStop = (Button) findViewById(R.id.bt_stop);
+        btStop.setEnabled(false);
 
         //recycleView
         rvEarnList = (RecyclerView) findViewById(R.id.rvEarnList);
 
         //textView
-        tv_start_time = (TextView) findViewById(R.id.bt_start);
+        tv_start_time = (TextView) findViewById(R.id.tvStartTime);
         tv_duration = (TextView) findViewById(R.id.tvDuration);
+        tv_bottom_panel = (TextView) findViewById(R.id.tvBottomPannel);
 
         //database
         database = new Database(getApplicationContext());
@@ -244,16 +288,8 @@ public class MainActivity extends AppCompatActivity {
 
     //-------------------------------------------SPINNER-----------------------------------------------------------------
     private void setUpSpinner() {
-        //getting data from database table sheetInfo
-//        String[] sheetNames = new String[sheetInfos.size()];
-//        for (int i = 0; i < sheetInfos.size(); i++) {
-////            sheetNames[i] = sheetInfos.get(i).getName();
-//            int sheetUidFromDB = sheetInfos.get(i).getId();
-//            sheetUID = String.valueOf(sheetUidFromDB);
-//            dailyWage = sheetInfos.get(i).getHourRate();
-//        }
-
         //--------------new spinner------------
+
         if (sheetInfos.size() != 0) {
             spinnerEarningNew.setItems(sheetInfos);
         } else {
@@ -310,7 +346,12 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-        super.onResume();
+
+        //get data from database
+        sheetInfos = database.getAllSheetInfo();
         setUpSpinner();
+        earningInfoAdapter.notifyDataSetChanged();
+        spinnerSheetSelectedOrNot=true;
+        super.onResume();
     }
 }

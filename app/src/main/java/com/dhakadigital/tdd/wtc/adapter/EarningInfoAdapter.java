@@ -33,7 +33,7 @@ public class EarningInfoAdapter extends RecyclerView.Adapter<EarningInfoAdapter.
 
     @Override
     public void onBindViewHolder(EarningInfoAdapter.AddEarningInfoVH holder, int position) {
-        holder.tv_ern_duration.setText(String.valueOf(EarningInfos.get(position).getDuration()));
+        holder.tv_ern_duration.setText(String.valueOf(EarningInfos.get(position).getDuration()+" hr"));
         holder.tv_ern_wages.setText(EarningInfos.get(position).getWages());
         holder.tv_ern_date.setText(EarningInfos.get(position).getDate_in_millis());
         holder.tv_ern_start_end.setText(EarningInfos.get(position).getStart_time_millis());

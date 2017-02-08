@@ -61,37 +61,48 @@
                 android:hint="00.00.00" />
 
         </TableRow>
-    <TableRow>
+    </TableLayout>
+    <LinearLayout android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:orientation="horizontal"
+        android:layout_below="@id/tbl_user_property"
+        android:id="@+id/lnLyTextViewHolder">
         <TextView
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
             android:gravity="center"
             android:layout_weight="1"
             android:text="DATE"/>
         <TextView
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
             android:gravity="center"
             android:layout_weight="1"
             android:text="START/END"/>
         <TextView
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
             android:gravity="center"
             android:layout_weight="1"
             android:text="DURATION"/>
         <TextView
+            android:layout_height="match_parent"
+            android:layout_width="0dp"
             android:gravity="center"
             android:layout_weight="1"
             android:text="DAILY WAGE"/>
-    </TableRow>
-    </TableLayout>
+    </LinearLayout>
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/tbl_user_property"
+        android:layout_below="@+id/lnLyTextViewHolder"
         android:id="@+id/rvEarnList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:listitem="@layout/recycleview_user_earning" />
-    <LinearLayout
-
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_height="wrap_content">
-<!--<TextView />-->
-
-    </LinearLayout>
+<TextView
+    android:layout_alignParentBottom="true"
+    android:id="@+id/tvBottomPannel"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:textStyle="bold"
+    android:text="Total :"/>
 </RelativeLayout>
