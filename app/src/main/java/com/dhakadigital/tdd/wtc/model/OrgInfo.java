@@ -1,4 +1,4 @@
-package com.dhakadigital.tdd.wtc.pojo;
+package com.dhakadigital.tdd.wtc.model;
 
 /**
  * Created by y34h1a on 2/4/17.

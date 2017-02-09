@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.dhakadigital.tdd.wtc.R;
-import com.dhakadigital.tdd.wtc.pojo.EarningInfo;
+import com.dhakadigital.tdd.wtc.model.EarningInfo;
 
 import java.util.ArrayList;
 

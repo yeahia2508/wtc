@@ -8,7 +8,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.dhakadigital.tdd.wtc.R;
-import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
+import com.dhakadigital.tdd.wtc.model.SheetInfo;
 
 import java.util.ArrayList;
 

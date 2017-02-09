@@ -19,8 +19,8 @@ import android.widget.Toast;
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.EarningInfoAdapter;
 import com.dhakadigital.tdd.wtc.database.Database;
-import com.dhakadigital.tdd.wtc.pojo.EarningInfo;
-import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
+import com.dhakadigital.tdd.wtc.model.EarningInfo;
+import com.dhakadigital.tdd.wtc.model.SheetInfo;
 import com.dhakadigital.tdd.wtc.utils.SharedPref;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 

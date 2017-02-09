@@ -7,9 +7,9 @@ import android.database.sqlite.SQLiteException;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteStatement;
 
-import com.dhakadigital.tdd.wtc.pojo.EarningInfo;
-import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
-import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
+import com.dhakadigital.tdd.wtc.model.EarningInfo;
+import com.dhakadigital.tdd.wtc.model.SheetInfo;
+import com.dhakadigital.tdd.wtc.model.OrgInfo;
 
 import java.util.ArrayList;
 

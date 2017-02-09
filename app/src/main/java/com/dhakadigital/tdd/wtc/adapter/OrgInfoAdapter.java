@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.constants.Constants;
-import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
-import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
+import com.dhakadigital.tdd.wtc.model.SheetInfo;
+import com.dhakadigital.tdd.wtc.model.OrgInfo;
 
 import java.util.ArrayList;
 

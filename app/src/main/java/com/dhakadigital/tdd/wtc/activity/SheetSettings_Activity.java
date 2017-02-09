@@ -16,8 +16,8 @@ import android.widget.Toast;
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.SheetInfoAdapter;
 import com.dhakadigital.tdd.wtc.database.Database;
-import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
-import com.dhakadigital.tdd.wtc.pojo.SheetInfo;
+import com.dhakadigital.tdd.wtc.model.OrgInfo;
+import com.dhakadigital.tdd.wtc.model.SheetInfo;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.ArrayList;

@@ -16,7 +16,7 @@ import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.OrgInfoAdapter;
 import com.dhakadigital.tdd.wtc.constants.Constants;
 import com.dhakadigital.tdd.wtc.database.Database;
-import com.dhakadigital.tdd.wtc.pojo.OrgInfo;
+import com.dhakadigital.tdd.wtc.model.OrgInfo;
 
 import java.util.ArrayList;
 
