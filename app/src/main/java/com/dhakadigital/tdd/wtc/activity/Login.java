@@ -1,8 +1,6 @@
 package com.dhakadigital.tdd.wtc.activity;
 
-import android.app.ProgressDialog;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -14,8 +12,8 @@ import android.widget.TextView;
 
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.model.Response;
-import com.dhakadigital.tdd.wtc.service.ApiService;
 import com.dhakadigital.tdd.wtc.model.UserRequest;
+import com.dhakadigital.tdd.wtc.service.ApiService;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -90,7 +88,6 @@ public class Login extends AppCompatActivity {
                         tvResponse.setText("Error");
                     }
                 });
-
 
             }
         });

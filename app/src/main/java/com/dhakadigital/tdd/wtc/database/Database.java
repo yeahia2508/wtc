@@ -47,6 +47,7 @@ public class Database {
     //USER EARNING
     private String[] user_earning_info_column = {
             DatabaseHelper.C_E_UID,
+            DatabaseHelper.C_E_SHEET_UID,
             DatabaseHelper.C_E_DATE,
             DatabaseHelper.C_E_START_TIME,
             DatabaseHelper.C_E_DURATION,
@@ -79,7 +80,7 @@ public class Database {
         statement.bindString(2, earningInfo.getSheet_uid());
         statement.bindString(3, earningInfo.getDate_in_millis());
         statement.bindString(4, earningInfo.getStart_time_millis());
-        statement.bindLong(5, earningInfo.getDuration());
+        statement.bindString(5, earningInfo.getDuration());
         statement.bindString(6, earningInfo.getWages());
         statement.execute();
 
@@ -141,7 +142,7 @@ public class Database {
                 EarningInfo earningInfo = new EarningInfo();
                 earningInfo.setDate_in_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
                 earningInfo.setStart_time_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
-                earningInfo.setDuration(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
+                earningInfo.setDuration(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
                 earningInfo.setWages(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
                 listEarningInfo.add(earningInfo);
             } while (cursor.moveToNext());
@@ -172,11 +173,7 @@ public class Database {
 
 
     //----------------------------SEARCH QUERY FROM EARNING TABLE-----------------------------------
-    //this query will find the selected sheet in mainActivity.sheetSpinner=value
-    //and calculate all the values listed below
     //row_count = date(how many day i worked / how many entry there)
-    //sum all duration value and show = total duration
-    //sum all wages values and show = total wages
 
     //USER EARNING GET ALL INFO
     public ArrayList<EarningInfo> getEarningInfoBySheet(String sheetUid) {
@@ -190,7 +187,7 @@ public class Database {
                 EarningInfo earningInfo = new EarningInfo();
                 earningInfo.setDate_in_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
                 earningInfo.setStart_time_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
-                earningInfo.setDuration(cursor.getLong(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
+                earningInfo.setDuration(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
                 earningInfo.setWages(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
                 listEarningInfo.add(earningInfo);
             } while (cursor.moveToNext());
@@ -227,31 +224,6 @@ public class Database {
         mSumCursor.close();
         return totalDuration;
     }
-
-
-    //-------------------------TODO: please see here in Database.java--------------------------
-//    bro i may get a sql exception from mainActivity caused by this three rawQuery. if possible can we return
-//    total day, total wage, total duration in one row?
-
-
-
-
-
-
-   /* public OrgInfo searchOrg(String orgName){
-        Cursor cursor;
-        OrgInfo orgInfo = new OrgInfo();
-        cursor = mDatabase.query(DatabaseHelper.CREATE_TABLE_ORG_INFO, org_info_column, DatabaseHelper.C_ORG_NAME + "='" + orgName+"'", null, null, null, null,null);
-
-        if(cursor != null && cursor.getCount() > 0) {
-            cursor.moveToFirst();
-
-            orgInfo.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_NAME)));
-            orgInfo.setAddress(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_ADDRESS)));
-        }
-
-        return orgInfo;
-    }*/
 
     //----------------------------INNER DATABASE CLASS-----------------------------------
     public static class DatabaseHelper extends SQLiteOpenHelper {
@@ -303,7 +275,7 @@ public class Database {
                 C_E_SHEET_UID + " TEXT, " +
                 C_E_DATE + " TEXT, " +
                 C_E_START_TIME + " TEXT, " +
-                C_E_DURATION + ", " +
+                C_E_DURATION + "TEXT, " +
                 C_E_WAGES + " TEXT " +
                 ");";
 

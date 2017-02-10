@@ -2,13 +2,10 @@ package com.dhakadigital.tdd.wtc.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,22 +31,6 @@ import java.util.Locale;
 public class MainActivity extends AppCompatActivity {
 
 
-//
-//    --------------------------issue to be fixed----------------------------------
-//    -(SOLVED) we have to save data in shared preferance when press in start     done         -
-//    - ------------------------start button action------------------------------ -
-//    - (SOLVED)take start time and date, conver date to milli second, save date and      -
-//    - millis to, shared preferances, disable spinner and start button           -
-//    - saving data.                                            -
-//    - ------------------------stop button action------------------------------- -
-//    - (SOLVED)take stop time and date convert to millis, bring start time/date millis   -
-//    - from sharedPref, calculate duration,
-//
-//    - save all data to database and showRV -
-//    -----------------------------------------------------------------------------
-//
-
-
     private static final String TAG = "main_activity";
     //------------------------------------------VARIABLES & VIEW----------------------------------------------------------
     //String
@@ -57,9 +38,6 @@ public class MainActivity extends AppCompatActivity {
     String sheetUID;
     Double dailyWage;
     String currentStartTime,currentEndTime;
-
-    //boolean
-    boolean spinnerSheetSelectedOrNot=false;
 
     //TextView
     TextView tv_start_time, tv_duration,tv_bottom_panel;
@@ -103,10 +81,7 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-
         initView();
-        //TODO: Log please remove it
-        Log.e(TAG, "onClick: stop button spinner selected or not position "+spinnerSheetSelectedOrNot );
     }
 
 
@@ -143,36 +118,23 @@ public class MainActivity extends AppCompatActivity {
         btStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (!spinnerSheetSelectedOrNot){
-                    Snackbar.make(view,"Please select a sheet first",Snackbar.LENGTH_SHORT);
-                    //TODO: Log please remove it
-                    Log.e(TAG, "onClick: stop button spinner selected or not position "+spinnerSheetSelectedOrNot );
-                }else {
                     Date endDate = null;
                     Date startDate = null;
-
-                    //TODO: Log please remove it
-                    Log.e(TAG, "onClick: stop button spinner selected or not position "+spinnerSheetSelectedOrNot );
-
                     //text view shows start time
-                    tv_start_time.setText("");
                     String formattedDate = df.format(cc.getTime());
                     currentEndTime = timeFormat.format(cc.getTime());
                     String startTimeEndTime = currentStartTime + "/" + currentEndTime;
-
                     int mHour = cc.get(Calendar.HOUR_OF_DAY);
                     int mMinute = cc.get(Calendar.MINUTE);
-                    int mSecond = cc.get(Calendar.SECOND);
-
+//                    int mSecond = cc.get(Calendar.SECOND);
+                    long difference = 0;
+                    int hours = 0, min = 0;
                     String endTime = String.format(Locale.ENGLISH, "%02d:%02d", mHour, mMinute);
                     String startTime = sharedPref.getStartTime();
 
-                    long difference = 0;
-                    int hours = 0, min = 0;
                     try {
                         endDate = timeFormat.parse(endTime);
                         startDate = timeFormat.parse(startTime);
-
                         difference = endDate.getTime() - startDate.getTime();
                         if (difference < 0) {
                             Date dateMax = timeFormat.parse("24:00");
@@ -182,35 +144,27 @@ public class MainActivity extends AppCompatActivity {
                         int days = (int) (difference / (1000 * 60 * 60 * 24));
                         hours = (int) ((difference - (1000 * 60 * 60 * 24 * days)) / (1000 * 60 * 60));
                         min = (int) (difference - (1000 * 60 * 60 * 24 * days) - (1000 * 60 * 60 * hours)) / (1000 * 60);
-
-                        Toast.makeText(getApplicationContext(), "Time: " + hours + ":" + min, Toast.LENGTH_SHORT).show();
                     } catch (ParseException e) {
                         e.printStackTrace();
                     }
 
+                //TODO: remove that later
+                Toast.makeText(MainActivity.this, "Hours: "+hours+"\nminutes: "+min, Toast.LENGTH_LONG).show();
+
                     String totalWage = String.valueOf(dailyWage * (hours + (min / 60)));//total wage
 
-
                     //showing duration in textView
-                    tv_duration.setText("Duration: " + difference);
-                    //TODO: Log test clear the log
-                    Log.e(TAG, "onDatabase insert: \ndailyWage = " + dailyWage + "\nHour = " + hours + "\nMinute = " + min + "\n-------------" +
-                            "totalWage = " + totalWage + "\n\n\nreview information going in database\n"+
-                    "sheet UID = "+sheetUID+"\nDate = "+formattedDate+"\nStart & End time = "+startTimeEndTime+"\n" +
-                            "Duration = "+difference+"\nTotal Wage = "+totalWage);
-//                String sTotalWage = String.valueOf(totalWage);
+                String workedDuration = ""+ hours+":"+min;
+                    tv_duration.setText("Duration: " + hours+":"+min);
                     //---EARNING INFO INSERTED INTO DATABASE HERE---
-                    EarningInfo insertEarningInfo = new EarningInfo(sheetUID, formattedDate, startTimeEndTime, difference, totalWage);
-                    //TODO:all wages are same : showing toast
-                    Toast.makeText(MainActivity.this, "totalDuration: " + difference + "\nwage from Sheet: " + dailyWage +
-                            "totalCalculated wage: " + totalWage, Toast.LENGTH_LONG).show();
+                    EarningInfo insertEarningInfo = new EarningInfo(sheetUID, formattedDate, startTimeEndTime, workedDuration, totalWage);
+
                     database.insertEarningInfo(insertEarningInfo);
 
                     updateRecycleViewAdapter(insertEarningInfo);
-                    btStart.setEnabled(true);
                     spinnerEarningNew.setEnabled(true);
-
-                }
+                    btStart.setEnabled(false);
+                    btStop.setEnabled(false);
             }
         });
 
@@ -219,18 +173,23 @@ public class MainActivity extends AppCompatActivity {
         spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
             @Override
             public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-                int sheetUidFromDB = sheetInfos.get(position).getId();
-                sheetUID = String.valueOf(sheetUidFromDB);
+                int sheetUIDinINT = sheetInfos.get(position).getId();
+                sheetUID = String.valueOf(sheetUIDinINT);
                 dailyWage = sheetInfos.get(position).getHourRate();
-                spinnerSheetSelectedOrNot=true;
                 setUpEarningRecyclerAdapter(sheetUID);
-                int sheetUIDinINT = Integer.valueOf(sheetUID);
-                String totalOfDayDurationMoney="Total Day: "+database.getTotalDayCount(sheetUIDinINT)+
-                        "  Duration: "+database.getTotalDuration(sheetUIDinINT)+"  Wages: "+database.getTotalWage(sheetUIDinINT);
-                tv_bottom_panel.setText(totalOfDayDurationMoney);
+                bottomPanelShowInfo(sheetUIDinINT);
+                btStart.setEnabled(true);
             }
         });
 
+    }
+
+    //show total of day worked, duration, wage;
+    private void bottomPanelShowInfo(int sheetUIDinINT) {
+        //this method will set a text in text view located in mainActivity total of day, duration, wage
+        String totalOfDayDurationMoney="Total Day: "+database.getTotalDayCount(sheetUIDinINT)+
+                "  Duration: "+database.getTotalDuration(sheetUIDinINT)+"  Wages: "+database.getTotalWage(sheetUIDinINT);
+        tv_bottom_panel.setText(totalOfDayDurationMoney);
     }
 
     //-----VIEW ON CLICK END------
@@ -238,9 +197,11 @@ public class MainActivity extends AppCompatActivity {
     private void updateRecycleViewAdapter(EarningInfo insertEarningInfo) {
         if (earningInfoAdapter.getItemCount() > 1) {
             earningInfoAdapter.add(earningInfoAdapter.getItemCount() - 1, insertEarningInfo);
+            bottomPanelShowInfo(Integer.valueOf(insertEarningInfo.getSheet_uid()));//tvBottomPanel.setTotal
             earningInfoAdapter.notifyDataSetChanged();
 
         } else {
+            bottomPanelShowInfo(Integer.valueOf(insertEarningInfo.getSheet_uid()));//tvBottomPanel.setTotal
             earningInfoAdapter.add(0, insertEarningInfo);
             earningInfoAdapter.notifyDataSetChanged();
         }
@@ -250,14 +211,13 @@ public class MainActivity extends AppCompatActivity {
 
     //-----------------------------------INITIALIZE VIEW HERE------------------------------------------------------------
     private void initView() {
-
-
         timeFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
         cc = Calendar.getInstance();
         df = new SimpleDateFormat("dd-MMM-yyyy");
 
         //button
         btStart = (Button) findViewById(R.id.bt_start);
+        btStart.setEnabled(false);
         btStop = (Button) findViewById(R.id.bt_stop);
         btStop.setEnabled(false);
 
@@ -272,7 +232,7 @@ public class MainActivity extends AppCompatActivity {
         //database
         database = new Database(getApplicationContext());
 
-        //Spinner old
+        //Spinner
         spinnerEarningNew = (MaterialSpinner) findViewById(R.id.spinnerEarningNew);
 
         //SharedPref
@@ -289,7 +249,6 @@ public class MainActivity extends AppCompatActivity {
     //-------------------------------------------SPINNER-----------------------------------------------------------------
     private void setUpSpinner() {
         //--------------new spinner------------
-
         if (sheetInfos.size() != 0) {
             spinnerEarningNew.setItems(sheetInfos);
         } else {
@@ -340,18 +299,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public String toString() {
-        return super.toString();
-    }
-
-    @Override
     protected void onResume() {
-
         //get data from database
         sheetInfos = database.getAllSheetInfo();
         setUpSpinner();
         earningInfoAdapter.notifyDataSetChanged();
-        spinnerSheetSelectedOrNot=true;
         super.onResume();
     }
 }
