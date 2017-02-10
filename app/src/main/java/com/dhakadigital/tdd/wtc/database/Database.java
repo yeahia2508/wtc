@@ -275,7 +275,7 @@ public class Database {
                 C_E_SHEET_UID + " TEXT, " +
                 C_E_DATE + " TEXT, " +
                 C_E_START_TIME + " TEXT, " +
-                C_E_DURATION + "TEXT, " +
+                C_E_DURATION + " TEXT, " +
                 C_E_WAGES + " TEXT " +
                 ");";
 

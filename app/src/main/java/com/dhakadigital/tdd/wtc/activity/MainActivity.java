@@ -124,6 +124,7 @@ public class MainActivity extends AppCompatActivity {
                     String formattedDate = df.format(cc.getTime());
                     currentEndTime = timeFormat.format(cc.getTime());
                     String startTimeEndTime = currentStartTime + "/" + currentEndTime;
+
                     int mHour = cc.get(Calendar.HOUR_OF_DAY);
                     int mMinute = cc.get(Calendar.MINUTE);
 //                    int mSecond = cc.get(Calendar.SECOND);
@@ -163,7 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                     updateRecycleViewAdapter(insertEarningInfo);
                     spinnerEarningNew.setEnabled(true);
-                    btStart.setEnabled(false);
+                    btStart.setEnabled(true);
                     btStop.setEnabled(false);
             }
         });
@@ -177,7 +178,7 @@ public class MainActivity extends AppCompatActivity {
                 sheetUID = String.valueOf(sheetUIDinINT);
                 dailyWage = sheetInfos.get(position).getHourRate();
                 setUpEarningRecyclerAdapter(sheetUID);
-                bottomPanelShowInfo(sheetUIDinINT);
+//                bottomPanelShowInfo(sheetUIDinINT);
                 btStart.setEnabled(true);
             }
         });
@@ -185,23 +186,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     //show total of day worked, duration, wage;
-    private void bottomPanelShowInfo(int sheetUIDinINT) {
-        //this method will set a text in text view located in mainActivity total of day, duration, wage
-        String totalOfDayDurationMoney="Total Day: "+database.getTotalDayCount(sheetUIDinINT)+
-                "  Duration: "+database.getTotalDuration(sheetUIDinINT)+"  Wages: "+database.getTotalWage(sheetUIDinINT);
-        tv_bottom_panel.setText(totalOfDayDurationMoney);
-    }
+//    private void bottomPanelShowInfo(int sheetUIDinINT) {
+//        //this method will set a text in text view located in mainActivity total of day, duration, wage
+//        if (database.getTotalDayCount(sheetUIDinINT)>0){
+//
+//            String totalOfDayDurationMoney="Total Day: "+database.getTotalDayCount(sheetUIDinINT)+
+//                    "  Duration: "+database.getTotalDuration(sheetUIDinINT)+"  Wages: "+database.getTotalWage(sheetUIDinINT);
+//            tv_bottom_panel.setText(totalOfDayDurationMoney);
+//        }
+//    }
 
     //-----VIEW ON CLICK END------
 
     private void updateRecycleViewAdapter(EarningInfo insertEarningInfo) {
         if (earningInfoAdapter.getItemCount() > 1) {
             earningInfoAdapter.add(earningInfoAdapter.getItemCount() - 1, insertEarningInfo);
-            bottomPanelShowInfo(Integer.valueOf(insertEarningInfo.getSheet_uid()));//tvBottomPanel.setTotal
+//            bottomPanelShowInfo(Integer.valueOf(insertEarningInfo.getSheet_uid()));//tvBottomPanel.setTotal
             earningInfoAdapter.notifyDataSetChanged();
 
         } else {
-            bottomPanelShowInfo(Integer.valueOf(insertEarningInfo.getSheet_uid()));//tvBottomPanel.setTotal
+//            bottomPanelShowInfo(Integer.valueOf(insertEarningInfo.getSheet_uid()));//tvBottomPanel.setTotal
             earningInfoAdapter.add(0, insertEarningInfo);
             earningInfoAdapter.notifyDataSetChanged();
         }
