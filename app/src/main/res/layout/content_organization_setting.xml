@@ -12,35 +12,13 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.dhakadigital.tdd.wtc.activity.OrganizationActivitySettings"
     tools:showIn="@layout/activity_organization_setting">
-    <EditText
-        android:id="@+id/etOriganizationName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Origanization Name"
-        />
-
-    <EditText
-        android:id="@+id/etOrgAddress"
-        android:layout_below="@id/etOriganizationName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Address"/>
-
-    <Button
-        android:id="@+id/btSave"
-        android:layout_below="@id/etOrgAddress"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Save" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rvOrgList"
-        android:layout_below="@id/btSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/btSave"
         tools:listitem="@layout/recycleview_org_info" />
-
-
 
 
 </RelativeLayout>

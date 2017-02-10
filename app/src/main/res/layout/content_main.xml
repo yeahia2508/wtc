@@ -1,108 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_margin="2dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:showIn="@layout/activity_main"
-    tools:context="com.dhakadigital.tdd.wtc.activity.MainActivity">
+    tools:context="com.dhakadigital.tdd.wtc.activity.MainActivity"
+    tools:showIn="@layout/activity_main">
+
+
+    <ImageButton
+        android:id="@+id/btStartStop"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        app:srcCompat="@android:drawable/ic_menu_compass"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
 
     <com.jaredrummler.materialspinner.MaterialSpinner
+        android:gravity="center"
         android:id="@+id/spinnerEarningNew"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btStartStop"
+        android:hint="user will select sheet from here" />
 
-    <TableLayout
-        android:layout_margin="4sp"
-        android:layout_below="@id/spinnerEarningNew"
-        android:id="@+id/tbl_user_property"
+    <LinearLayout
+        android:id="@+id/lnLyTextViewHolder"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@id/spinnerEarningNew"
         android:orientation="horizontal">
 
-        <TableRow>
-
-            <Button
-                android:id="@+id/bt_start"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="start" />
-
-            <Button
-                android:id="@+id/bt_stop"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:text="stop" />
-
-        </TableRow>
-
-        <TableRow>
-
-            <TextView
-                android:layout_width="0dp"
-                android:gravity="center"
-                android:id="@+id/tvStartTime"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:hint="00.00.00" />
-
-            <TextView
-                android:layout_width="0dp"
-                android:gravity="center"
-                android:id="@+id/tvDuration"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:hint="00.00.00" />
-
-        </TableRow>
-    </TableLayout>
-    <LinearLayout android:layout_height="wrap_content"
-        android:layout_width="match_parent"
-        android:orientation="horizontal"
-        android:layout_below="@id/tbl_user_property"
-        android:id="@+id/lnLyTextViewHolder">
         <TextView
-            android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="DATE"/>
+            android:gravity="center"
+            android:text="DATE" />
+
         <TextView
-            android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="START/END"/>
+            android:gravity="center"
+            android:text="START/END" />
+
         <TextView
-            android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="DURATION"/>
+            android:gravity="center"
+            android:text="DURATION" />
+
         <TextView
-            android:layout_height="match_parent"
             android:layout_width="0dp"
-            android:gravity="center"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:text="DAILY WAGE"/>
+            android:gravity="center"
+            android:text="DAILY WAGE" />
     </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
-        android:layout_below="@+id/lnLyTextViewHolder"
         android:id="@+id/rvEarnList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_below="@+id/lnLyTextViewHolder"
         tools:listitem="@layout/recycleview_user_earning" />
-<TextView
-    android:layout_alignParentBottom="true"
-    android:id="@+id/tvBottomPannel"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:textStyle="bold"
-    android:text="Total :"/>
+
+    <TextView
+        android:id="@+id/tvBottomPannel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_gravity="bottom|end"
+        android:text="Total :"
+        android:textStyle="bold" />
+
 </RelativeLayout>

@@ -1,14 +1,13 @@
 package com.dhakadigital.tdd.wtc.model;
 
 /**
- * Created by y34h1a on 2/4/17.
+ * Created by user on 2/10/2017.
  */
 
-public class OrgInfo {
+public class UserInfo {
     private int id;
     private String name;
-    private String address;
-
+    private String email;
 
     public int getId() {
         return id;
@@ -26,16 +25,19 @@ public class OrgInfo {
         this.name = name;
     }
 
-    public String getAddress() {
-        return address;
+    public String getEmail() {
+        return email;
     }
 
-    public void setAddress(String address) {
-        this.address = address;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override
     public String toString() {
-        return name;
+        return "UserInfo{" +
+                "name='" + name + '\'' +
+                ", email='" + email + '\'' +
+                '}';
     }
 }

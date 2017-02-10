@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:padding="2dp"
                 android:textSize="20dp"
-                android:text="Org Address"/>
+                android:text="Org Details"/>
 
             <!--edit button to edit sheet name if user want-->
             <!--and-->
