@@ -125,6 +125,33 @@ public class Database {
         mDatabase.endTransaction();
     }
 
+    //------------------------------UPDATE QUERY TABLES---------------------------------
+    public int updateSheetInfo(String sheetName, Double wagePerHour, int sheetUID) {
+        int status;
+        Cursor mSumCursor = mDatabase.rawQuery("UPDATE " + DatabaseHelper.TABLE_SHEET + " SET " + DatabaseHelper.C_S_NAME +
+                " = '" + sheetName + "', " + DatabaseHelper.C_S_HOUR_RATE + " = '" + wagePerHour + "' WHERE " +
+                DatabaseHelper.C_S_UID + " = '" + sheetUID + "'", null);
+        if (mSumCursor != null && mSumCursor.moveToFirst()) {
+            status = mSumCursor.getInt(0);
+            mSumCursor.close();
+            return status;
+        } else {
+            return status = 0;
+        }
+    }
+    public int updateOrgInfo(String orgName, String orgAddress, int orgUID){
+        int status;
+        Cursor mSumCursor = mDatabase.rawQuery("UPDATE " + DatabaseHelper.TABLE_ORGANIZATION_INFO + " SET " + DatabaseHelper.C_ORG_NAME +
+                " = '" + orgName + "', " + DatabaseHelper.C_ORG_ADDRESS + " = '" + orgAddress + "' WHERE " +
+                DatabaseHelper.C_O_UID + " = '" + orgUID + "'", null);
+        if (mSumCursor != null && mSumCursor.moveToFirst()) {
+            status = mSumCursor.getInt(0);
+            mSumCursor.close();
+            return status;
+        } else {
+            return status = 0;
+        }
+    }
 
     //----------------------------GET DATA FROM TABLES-----------------------------------
     //USER GET ALL INFORMATION

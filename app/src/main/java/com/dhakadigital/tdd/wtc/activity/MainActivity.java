@@ -3,10 +3,13 @@ package com.dhakadigital.tdd.wtc.activity;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.dhakadigital.tdd.wtc.R;
+import com.dhakadigital.tdd.wtc.database.Database;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -17,20 +20,17 @@ public class MainActivity extends AppCompatActivity {
     String sheetName;
     String sheetUID;
     Double dailyWage;
-    String currentStartTime,currentEndTime;
-//
+    String currentStartTime, currentEndTime;
     //TextView
     TextView tv_ern_start_end_time;
-//
     //Button
     ImageButton btStartStop;
     //Fab
     FloatingActionButton fabToOrg;
-//    //RecycleView
-//    RecyclerView rvEarnList;
-//
-//    //Database
-//    Database database;
+    //RecycleView
+    RecyclerView rvEarnList;
+    //Database
+    Database database;
 //
 //    //Adapter
 //    EarningInfoAdapter earningInfoAdapter;
@@ -56,11 +56,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-//        database = new Database(getApplicationContext());
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        database = new Database(getApplicationContext());
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
-//        initView();
+        initView();
     }
 
 
@@ -149,7 +149,7 @@ public class MainActivity extends AppCompatActivity {
 //        });
 
 
-        //---------------Spinner item select listner--------------
+    //---------------Spinner item select listner--------------
 //        spinnerEarningNew.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
 //            @Override
 //            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
@@ -193,7 +193,7 @@ public class MainActivity extends AppCompatActivity {
 //
 //
 //    //-----------------------------------INITIALIZE VIEW HERE------------------------------------------------------------
-//    private void initView() {
+    private void initView() {
 //        timeFormat = new SimpleDateFormat("HH:mm", Locale.ENGLISH);
 //        cc = Calendar.getInstance();
 //        df = new SimpleDateFormat("dd-MMM-yyyy");
@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity {
 //        initListener();
 //        setUpSpinner();
 //        setUpEarningRecyclerAdapter(sheetUID);
-//    }
+    }
 //
 //    //-------------------------------------------SPINNER-----------------------------------------------------------------
 //    private void setUpSpinner() {
@@ -286,3 +286,23 @@ public class MainActivity extends AppCompatActivity {
 //        super.onResume();
 //    }
 }
+
+
+//----------spinner adapter set----------------------------
+//    void setUpSpinner() {
+//        final ArrayList<OrgInfo> orgInfosArrayList = database.getAllOrgInfo();
+//        for (int i = 0; i < orgInfosArrayList.size(); i++) {
+//            orgName = orgInfosArrayList.get(i).getName();
+//            int orgUidHere = orgInfosArrayList.get(i).getId();
+//            orgUid = String.valueOf(orgUidHere);
+//            orgAddress = orgInfosArrayList.get(i).getAddress();
+//        }
+//        //-------------this spinner can process direct arraylist---------
+//        if (orgInfosArrayList.size() != 0) {
+//            spOrganization.setItems(orgInfosArrayList);
+//        } else {
+//            spOrganization.setItems("create a organization first");
+//            Intent activityOrganizationSwitch = new Intent(this, OrganizationActivitySettings.class);
+//            startActivity(activityOrganizationSwitch);
+//        }
+//    }

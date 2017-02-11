@@ -28,19 +28,16 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
         this.sheetInfos = sheetInfos;
     }
 
-
     @Override
     public AddSheetInfoVH onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.recyclerview_sheet_info, parent, false);
-
         return new AddSheetInfoVH(itemView);
     }
 
 
     @Override
     public void onBindViewHolder(AddSheetInfoVH holder, int position) {
-
         holder.tvSheetName.setText(sheetInfos.get(position).getName());
         holder.tvOrgName.setText(sheetInfos.get(position).getOrg_name());
         holder.tvOrgAddress.setText(sheetInfos.get(position).getOrg_address());
@@ -105,7 +102,6 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
 
                 }
             }
-
             if (onItemClickListener != null) {
                 onItemClickListener.onItemClick(v, getAdapterPosition());
             }
@@ -118,7 +114,6 @@ public class SheetInfoAdapter extends RecyclerView.Adapter<SheetInfoAdapter.AddS
         void onDeleteIconClick(View view, int position);
 
         void onEditIconClick(View view, int position);
-
     }
 
     public void SetOnItemClickListener(final OnItemClickListener onItemClickListener) {

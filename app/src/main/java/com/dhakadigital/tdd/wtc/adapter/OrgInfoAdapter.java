@@ -19,88 +19,52 @@ import java.util.ArrayList;
  */
 
 public class OrgInfoAdapter extends RecyclerView.Adapter<OrgInfoAdapter.AddOrgInfoVH> {
-    //arrays for two view and pojo model
-//TODO: please read the note (^_^)
-//    -------------------------------------------------------------------
-//    - boss i thing we need two different adapter for this.            -
-//    - there is different arraylist and different id of all layout     -
-//    - components. so i think it will be convinient if we use two      -
-//    - different adapter. meanwhile if they require something else     -
-//    - later than it will be another pera to do it again. i made       -
-//    - another pojo for "SheetSettingsActivity" and database too.      -
-//    - Also i made some constructor and database insert & get method.  -
-//    - Sorry boss. Happy Coding and bue for today. see you night.      -
-//    -                 IN SHA ALLAH                                    -
-//    -------------------------------------------------------------------
 
     private ArrayList<OrgInfo> orgInfos = new ArrayList<>();
-    private ArrayList<SheetInfo> sheetInfos = new ArrayList<>();
-
     private OnItemClickListener onItemClickListener;
     public String activityName;
+    public int selectedCard = -1;
 
-    public OrgInfoAdapter(ArrayList<OrgInfo> orgInfos){
+    public OrgInfoAdapter(ArrayList<OrgInfo> orgInfos) {
         this.orgInfos = orgInfos;
     }
-    public OrgInfoAdapter(ArrayList<OrgInfo> orgInfos, String activityName){
-        this.orgInfos = orgInfos;
-        this.activityName = activityName;
-    }
-
-
-    /*public OrgInfoAdapter(ArrayList<SheetInfo> sheetInfos, String activityName, String i_think_we_need_better_plan){
-        this.sheetInfos = sheetInfos;
-    }
-    public OrgInfoAdapter(ArrayList<SheetInfo> sheetInfos, String activityName, String b, String c){
-        this.sheetInfos = sheetInfos;
-        this.activityName = activityName;
-    }*/
 
     @Override
     public AddOrgInfoVH onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView;
-        if(activityName.equals(Constants.ACTIVITY_ORG_SETTING)){
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recycleview_org_info, parent, false);
-        }else {
-            itemView = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.recyclerview_sheet_info, parent, false);
-        }
+        itemView = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.recycleview_org_info, parent, false);
         return new AddOrgInfoVH(itemView);
     }
-
-
-
+//http://stackoverflow.com/questions/39270623/android-recycler-view-select-only-one-image-and-show-tick-mark-on-selected-image
     @Override
     public void onBindViewHolder(AddOrgInfoVH holder, int position) {
-        //TODO: boss if this is here will it through null pointer when im in sheetSettingsActivity?
         holder.tvOrgName.setText(orgInfos.get(position).getName());
         holder.tvOrgAddress.setText(orgInfos.get(position).getAddress());
-
-        if(activityName.equals(Constants.ACTIVITY_ORG_SETTING)){
-            holder.tvOrgName.setText(orgInfos.get(position).getName());
-            holder.tvOrgAddress.setText(orgInfos.get(position).getAddress());
-        }else{
-            holder.tvSheetName.setText(orgInfos.get(position).getName());
-        }
+        holder.tvOrgName.setText(orgInfos.get(position).getName());
+        holder.tvOrgAddress.setText(orgInfos.get(position).getAddress());
+        holder.ivOrgSelectStatus.setBackgroundResource(R.drawable.edit);//set an image in card when clicked
     }
 
-    public void add (int position, OrgInfo orgInfo){
+    public void add(int position, OrgInfo orgInfo) {
         orgInfos.add(position, orgInfo);
         notifyItemInserted(position);
     }
 
-    public void delete(int position){
+    public void delete(int position) {
         orgInfos.remove(position);
         notifyItemRemoved(position);
     }
 
-    public void reAddOrgInfo(ArrayList<OrgInfo> addOrgInfo){
+    public void reAddOrgInfo(ArrayList<OrgInfo> addOrgInfo) {
         orgInfos = addOrgInfo;
         notifyItemRangeChanged(0, addOrgInfo.size());
         notifyDataSetChanged();
     }
 
+    public void selectedOrg(int position){
+
+    }
     @Override
     public int getItemCount() {
         return orgInfos.size();
@@ -108,54 +72,67 @@ public class OrgInfoAdapter extends RecyclerView.Adapter<OrgInfoAdapter.AddOrgIn
 
     public class AddOrgInfoVH extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvOrgName, tvOrgAddress;
-        TextView tvSheetName, tvOrgDetails;
-        ImageView ivDelete, ivEdit;
+        ImageView ivDelete, ivEdit,ivOrgSelectStatus,ivSelectOrg;
+
         public AddOrgInfoVH(View itemView) {
             super(itemView);
             tvOrgName = (TextView) itemView.findViewById(R.id.tvName);
             tvOrgAddress = (TextView) itemView.findViewById(R.id.tvAddress);
-
-            if(activityName.equals(Constants.ACTIVITY_SHEET_SETTING)){
-                tvSheetName = (TextView) itemView.findViewById(R.id.tvNameSheet);
-            }
             ivDelete = (ImageView) itemView.findViewById(R.id.ivDelete);
             ivEdit = (ImageView) itemView.findViewById(R.id.ivEdit);
+            ivSelectOrg = (ImageView) itemView.findViewById(R.id.ivSelect);
+            ivOrgSelectStatus = (ImageView) itemView.findViewById(R.id.ivSelectStatus);
+
             itemView.setOnClickListener(this);
             ivDelete.setOnClickListener(this);
             ivEdit.setOnClickListener(this);
+            ivSelectOrg.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
 
-            if(v.getId() == ivEdit.getId()){
-                if(onItemClickListener!=null){
-                    onItemClickListener.onEditIconClick(v,getAdapterPosition());
+            if (v.getId() == ivEdit.getId()) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onEditIconClick(v, getAdapterPosition());
 
                 }
             }
 
-            if(v.getId() == ivDelete.getId()){
-                if(onItemClickListener!=null){
-                    onItemClickListener.onDeleteIconClick(v,getAdapterPosition());
+            if (v.getId() == ivDelete.getId()) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onDeleteIconClick(v, getAdapterPosition());
 
                 }
             }
 
-            if (onItemClickListener != null){
-                onItemClickListener.onItemClick(v,getAdapterPosition());
+            if (v.getId() == ivSelectOrg.getId()) {
+                if (onItemClickListener != null) {
+                    onItemClickListener.onOrgSelectClick(v, getAdapterPosition());
+                    selectedCard = getLayoutPosition();
+                    notifyDataSetChanged();
+                }
+            }
+
+
+            if (onItemClickListener != null) {
+                onItemClickListener.onItemClick(v, getAdapterPosition());
             }
         }
     }
 
     public interface OnItemClickListener {
-        void onItemClick(View view , int position);
+        void onItemClick(View view, int position);
+
         void onDeleteIconClick(View view, int position);
+
         void onEditIconClick(View view, int position);
+
+        void onOrgSelectClick(View view, int position);
 
     }
 
-    public void SetOnItemClickListener(final OnItemClickListener onItemClickListener){
+    public void SetOnItemClickListener(final OnItemClickListener onItemClickListener) {
         this.onItemClickListener = onItemClickListener;
     }
 }
