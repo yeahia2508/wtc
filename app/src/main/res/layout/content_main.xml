@@ -26,7 +26,11 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/btStartStop"
         android:hint="user will select sheet from here" />
-
+<TextView
+    android:layout_width="wrap_content"
+    android:text="12/12/1222 and end time"
+    android:id="@+id/tv_ern_start_end_time"
+    android:layout_height="match_parent" />
     <LinearLayout
         android:id="@+id/lnLyTextViewHolder"
         android:layout_width="match_parent"

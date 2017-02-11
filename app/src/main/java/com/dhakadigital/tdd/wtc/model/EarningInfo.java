@@ -5,30 +5,24 @@ package com.dhakadigital.tdd.wtc.model;
  */
 
 public class EarningInfo {
-    public int id;
-    public String sheet_uid;
-    public String date_in_millis;
-    public String start_time_millis;
-    public String duration;
-    public String wages;
+    private int id;
+    private String sheet_uid;
+    private String user_uid;
+    private String entry_date;
+    private String start_time;
+    private double duration;
+    private double wages;
 
     public EarningInfo() {
     }
 
-    public EarningInfo(String sheet_uid, String date_in_millis, String start_time_millis, String duration, String wages) {
+    public EarningInfo(String sheet_uid, String user_uid, String entry_date, String start_time, double duration, double wages) {
         this.sheet_uid = sheet_uid;
-        this.date_in_millis = date_in_millis;
-        this.start_time_millis = start_time_millis;
+        this.user_uid = user_uid;
+        this.entry_date = entry_date;
+        this.start_time = start_time;
         this.duration = duration;
         this.wages = wages;
-    }
-
-    public String getSheet_uid() {
-        return sheet_uid;
-    }
-
-    public void setSheet_uid(String sheet_uid) {
-        this.sheet_uid = sheet_uid;
     }
 
     public int getId() {
@@ -39,36 +33,51 @@ public class EarningInfo {
         this.id = id;
     }
 
-    public String getDate_in_millis() {
-        return date_in_millis;
+    public String getSheet_uid() {
+        return sheet_uid;
     }
 
-    public void setDate_in_millis(String date_in_millis) {
-        this.date_in_millis = date_in_millis;
+    public void setSheet_uid(String sheet_uid) {
+        this.sheet_uid = sheet_uid;
     }
 
-    public String getStart_time_millis() {
-        return start_time_millis;
+    public String getUser_uid() {
+        return user_uid;
     }
 
-    public void setStart_time_millis(String start_time_millis) {
-        this.start_time_millis = start_time_millis;
+    public void setUser_uid(String user_uid) {
+        this.user_uid = user_uid;
     }
 
-    public String getDuration() {
+    public String getEntry_date() {
+        return entry_date;
+    }
+
+    public void setEntry_date(String entry_date) {
+        this.entry_date = entry_date;
+    }
+
+    public String getStart_time() {
+        return start_time;
+    }
+
+    public void setStart_time(String start_time) {
+        this.start_time = start_time;
+    }
+
+    public double getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(double duration) {
         this.duration = duration;
     }
 
-    public String getWages() {
+    public double getWages() {
         return wages;
     }
 
-    public void setWages(String wages) {
+    public void setWages(double wages) {
         this.wages = wages;
     }
-
 }

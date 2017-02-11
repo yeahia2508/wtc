@@ -6,8 +6,9 @@ package com.dhakadigital.tdd.wtc.model;
 
 public class SheetInfo {
     private int id;
-    private String name;
     private String org_uid;
+    private String user_uid;
+    private String name;
     private String org_name;
     private String org_address;
     private Double hourRate;
@@ -19,17 +20,25 @@ public class SheetInfo {
     public SheetInfo() {
     }
 
-    public SheetInfo(String name, String org_uid, String org_name, String org_address, Double hourRate) {
-        this.name = name;
+    public SheetInfo(String org_uid, String user_uid, String name, String org_name, String org_address, Double hourRate) {
         this.org_uid = org_uid;
+        this.user_uid = user_uid;
+        this.name = name;
         this.org_name = org_name;
         this.org_address = org_address;
         this.hourRate = hourRate;
     }
 
-
     //----------------------------GETTERS & SETTERS-----------------------------------
 
+
+    public String getUser_uid() {
+        return user_uid;
+    }
+
+    public void setUser_uid(String user_uid) {
+        this.user_uid = user_uid;
+    }
 
     public Double getHourRate() {
         return hourRate;

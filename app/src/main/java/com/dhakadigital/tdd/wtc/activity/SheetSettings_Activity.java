@@ -1,6 +1,5 @@
 package com.dhakadigital.tdd.wtc.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -16,9 +15,7 @@ import android.widget.Toast;
 import com.dhakadigital.tdd.wtc.R;
 import com.dhakadigital.tdd.wtc.adapter.SheetInfoAdapter;
 import com.dhakadigital.tdd.wtc.database.Database;
-import com.dhakadigital.tdd.wtc.model.OrgInfo;
 import com.dhakadigital.tdd.wtc.model.SheetInfo;
-import com.jaredrummler.materialspinner.MaterialSpinner;
 
 import java.util.ArrayList;
 
@@ -35,6 +32,7 @@ public class SheetSettings_Activity extends AppCompatActivity {
     EditText etSheetName, etSalaryRate;
     //Button
     Button btSave;
+    FloatingActionButton fabAddSheet;
     //Spinner
     com.jaredrummler.materialspinner.MaterialSpinner spOrganization;
     //RecycleView
@@ -56,8 +54,7 @@ public class SheetSettings_Activity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         initView();
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        fabAddSheet.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
@@ -69,13 +66,10 @@ public class SheetSettings_Activity extends AppCompatActivity {
 
     //-------------------------------------INITIALIZATION VIEW & VARIABLE----------------------------------------------------
     private void initView() {
-        //edittext
-        etSheetName = (EditText) findViewById(R.id.etSheetName);
-        etSalaryRate = (EditText) findViewById(R.id.etSalaryRate);
+
         //button
         btSave = (Button) findViewById(R.id.btSave);
-        //Spinner
-        spOrganization = (com.jaredrummler.materialspinner.MaterialSpinner) findViewById(R.id.spOrganiztion);
+        fabAddSheet = (FloatingActionButton) findViewById(R.id.fabAddSheet);
         //recycleview
         rvSheetList = (RecyclerView) findViewById(R.id.rvSheetList);
         //database
@@ -83,40 +77,13 @@ public class SheetSettings_Activity extends AppCompatActivity {
         //get data form database
         sheetInfos = database.getAllSheetInfo();
 
-        setUpSpinner();
         setUpAdapter();
         initListener();
     }
 
     //-----------------------------------------ONCLICK HERE-----------------------------------------------
     private void initListener() {
-        //---------------save button to save sheet information------------
-        btSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String sheet_name = etSheetName.getText().toString();
-                Double hourRate = Double.parseDouble(etSalaryRate.getText().toString());
 
-                if (!sheet_name.isEmpty() && hourRate >= 0) {
-                    //setting data to database
-                    SheetInfo sheetInfo = new SheetInfo(sheet_name, orgUid, orgName, orgAddress, hourRate);
-
-                    //inserting data here about sheet info -----------------------
-                    database.insertSheetInfo(sheetInfo);
-                    updateAdapter(sheetInfo);
-                } else {
-                    Toast.makeText(getApplicationContext(), "Data Missing", Toast.LENGTH_SHORT).show();
-                }
-            }
-        });
-
-        //---------------Spinner item select listner--------------
-        spOrganization.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(MaterialSpinner view, int position, long id, Object item) {
-
-            }
-        });
     }
 
 
@@ -127,12 +94,9 @@ public class SheetSettings_Activity extends AppCompatActivity {
             sheetInfoAdapter.notifyDataSetChanged();
 
         } else {
-            //TODO: boss why we pass 0 in adapter? please write here
             sheetInfoAdapter.add(0, sheetInfo);
             sheetInfoAdapter.notifyDataSetChanged();
         }
-
-        Toast.makeText(getApplicationContext(), sheetInfo.getHourRate() + "", Toast.LENGTH_SHORT).show();
     }
 
 
@@ -165,28 +129,27 @@ public class SheetSettings_Activity extends AppCompatActivity {
     }
 
     //----------spinner adapter set----------------------------
-    void setUpSpinner() {
-        final ArrayList<OrgInfo> orgInfos = database.getAllOrgInfo();
-        for (int i = 0; i < orgInfos.size(); i++) {
-            orgName = orgInfos.get(i).getName();
-            int orgUidHere = orgInfos.get(i).getId();
-            orgUid = String.valueOf(orgUidHere);
-            orgAddress = orgInfos.get(i).getAddress();
-        }
-        //-------------this spinner can process direct arraylist---------
-        if (orgInfos.size() != 0) {
-            spOrganization.setItems(orgInfos);
-        } else {
-            spOrganization.setItems("create a organization first");
-            Intent activityOrganizationSwitch = new Intent(this, OrganizationActivitySettings.class);
-            startActivity(activityOrganizationSwitch);
-        }
-    }
+//    void setUpSpinner() {
+//        final ArrayList<OrgInfo> orgInfos = database.getAllOrgInfo();
+//        for (int i = 0; i < orgInfos.size(); i++) {
+//            orgName = orgInfos.get(i).getName();
+//            int orgUidHere = orgInfos.get(i).getId();
+//            orgUid = String.valueOf(orgUidHere);
+//            orgAddress = orgInfos.get(i).getAddress();
+//        }
+//        //-------------this spinner can process direct arraylist---------
+//        if (orgInfos.size() != 0) {
+//            spOrganization.setItems(orgInfos);
+//        } else {
+//            spOrganization.setItems("create a organization first");
+//            Intent activityOrganizationSwitch = new Intent(this, OrganizationActivitySettings.class);
+//            startActivity(activityOrganizationSwitch);
+//        }
+//    }
 
     @Override
     protected void onResume() {
         super.onResume();
-        setUpSpinner();
         sheetInfoAdapter.notifyDataSetChanged();
     }
 }

@@ -6,9 +6,18 @@ package com.dhakadigital.tdd.wtc.model;
 
 public class OrgInfo {
     private int id;
+    private String user_id;
     private String name;
     private String address;
 
+    public OrgInfo() {
+    }
+
+    public OrgInfo(String user_id, String name, String address) {
+        this.user_id = user_id;
+        this.name = name;
+        this.address = address;
+    }
 
     public int getId() {
         return id;
@@ -16,6 +25,14 @@ public class OrgInfo {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(String user_id) {
+        this.user_id = user_id;
     }
 
     public String getName() {

@@ -28,9 +28,17 @@ public class Database {
     }
 
     //----------------------------STRING ARRAY-----------------------------------
+
+    //USER INFO
+    private String[] user_info_column = {
+            DatabaseHelper.C_ORG_USER_UID,
+            DatabaseHelper.C_U_NAME,
+            DatabaseHelper.C_U_EMAIL
+    };
+
     //organization
     private String[] org_info_column = {
-            DatabaseHelper.C_USER_UID,
+            DatabaseHelper.C_ORG_USER_UID,
             DatabaseHelper.C_ORG_NAME,
             DatabaseHelper.C_ORG_ADDRESS
     };
@@ -57,19 +65,18 @@ public class Database {
             DatabaseHelper.C_E_WAGES
     };
 
-    //USER INFO
-    private String[] user_info_column = {
-            DatabaseHelper.C_U_UID,
-            DatabaseHelper.C_U_NAME,
-            DatabaseHelper.C_U_EMAIL
-    };
-
     //----------------------------INSERT DATA IN TABLES-----------------------------------
     //USER DATA INSERT
-    public void insertUserInfo(UserInfo userInfo){
+    public void insertUserInfo(UserInfo userInfo) {
         String sql = "INSERT INTO " + (DatabaseHelper.TABLE_USER_INFO + " VALUES(?,?)");
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         mDatabase.beginTransaction();
+        statement.clearBindings();
+        statement.bindString(2, userInfo.getName());
+        statement.bindString(3, userInfo.getEmail());
+        statement.execute();
+        mDatabase.setTransactionSuccessful();
+        mDatabase.endTransaction();
     }
 
     //ORGANIZATION DATA INSERT
@@ -77,30 +84,10 @@ public class Database {
         String sql = "INSERT INTO " + (DatabaseHelper.TABLE_ORGANIZATION_INFO + " VALUES(?,?,?)");
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         mDatabase.beginTransaction();
-
         statement.clearBindings();
         statement.bindString(2, orgInfo.getName());
         statement.bindString(3, orgInfo.getAddress());
         statement.execute();
-
-        mDatabase.setTransactionSuccessful();
-        mDatabase.endTransaction();
-    }
-
-    //USER INCOME DATA INSERT
-    public void insertEarningInfo(EarningInfo earningInfo) {
-        String sql = "INSERT INTO " + (DatabaseHelper.TABLE_WAGE + " VALUES(?,?,?,?,?,?)");
-        SQLiteStatement statement = mDatabase.compileStatement(sql);
-        mDatabase.beginTransaction();
-
-        statement.clearBindings();
-        statement.bindString(2, earningInfo.getSheet_uid());
-        statement.bindString(3, earningInfo.getDate_in_millis());
-        statement.bindString(4, earningInfo.getStart_time_millis());
-        statement.bindString(5, earningInfo.getDuration());
-        statement.bindString(6, earningInfo.getWages());
-        statement.execute();
-
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
     }
@@ -110,61 +97,71 @@ public class Database {
         String sql = "INSERT INTO " + (DatabaseHelper.TABLE_SHEET + " VALUES(?,?,?,?,?,?)");
         SQLiteStatement statement = mDatabase.compileStatement(sql);
         mDatabase.beginTransaction();
-
         statement.clearBindings();
-        statement.bindString(2, sheetInfo.getName());
-        statement.bindString(3, sheetInfo.getOrg_uid());
-        statement.bindString(4, sheetInfo.getOrg_name());
-        statement.bindString(5, sheetInfo.getOrg_address());
-        statement.bindDouble(6, sheetInfo.getHourRate());
+        statement.bindString(2, sheetInfo.getOrg_uid());
+        statement.bindString(3, sheetInfo.getUser_uid());
+        statement.bindString(4, sheetInfo.getName());
+        statement.bindString(5, sheetInfo.getOrg_name());
+        statement.bindString(6, sheetInfo.getOrg_address());
+        statement.bindDouble(7, sheetInfo.getHourRate());
         statement.execute();
+        mDatabase.setTransactionSuccessful();
+        mDatabase.endTransaction();
+    }
 
+    //USER INCOME DATA INSERT
+    public void insertEarningInfo(EarningInfo earningInfo) {
+        String sql = "INSERT INTO " + (DatabaseHelper.TABLE_WAGE + " VALUES(?,?,?,?,?,?)");
+        SQLiteStatement statement = mDatabase.compileStatement(sql);
+        mDatabase.beginTransaction();
+        statement.clearBindings();
+        statement.bindString(2, earningInfo.getSheet_uid());
+        statement.bindString(3, earningInfo.getUser_uid());
+        statement.bindString(4, earningInfo.getEntry_date());
+        statement.bindDouble(5, earningInfo.getDuration());
+        statement.bindDouble(6, earningInfo.getWages());
+        statement.execute();
         mDatabase.setTransactionSuccessful();
         mDatabase.endTransaction();
     }
 
 
     //----------------------------GET DATA FROM TABLES-----------------------------------
+    //USER GET ALL INFORMATION
+    public ArrayList<UserInfo> getAllUserInfo() {
+        ArrayList<UserInfo> listUserInfo = new ArrayList<>();
+        Cursor cursor = mDatabase.query(DatabaseHelper.TABLE_USER_INFO, user_info_column,
+                null, null, null, null, DatabaseHelper.C_USER_UID + " ASC");
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                UserInfo userInfo = new UserInfo();
+                userInfo.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.C_USER_UID)));
+                userInfo.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_U_NAME)));
+                userInfo.setEmail(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_U_EMAIL)));
+                listUserInfo.add(userInfo);
+            } while (cursor.moveToNext());
+        }
+        return listUserInfo;
+    }
+
     //ORGANIZATION GET ALL ORG INFO
     public ArrayList<OrgInfo> getAllOrgInfo() {
         ArrayList<OrgInfo> listOrgInfo = new ArrayList<>();
         Cursor cursor;
         cursor = mDatabase.query(DatabaseHelper.TABLE_ORGANIZATION_INFO, org_info_column,
-                null, null, null, null, DatabaseHelper.C_UID + " ASC");
-//        cursor = mDatabase.rawQuery("SELECT * FROM "+DatabaseHelper.TABLE_ORGANIZATION_INFO+" ORDER BY "+DatabaseHelper.C_UID+" ASC",null);
-
+                null, null, null, null, DatabaseHelper.C_O_UID + " ASC");
+//        cursor = mDatabase.rawQuery("SELECT * FROM "+DatabaseHelper.TABLE_ORGANIZATION_INFO+" ORDER BY "+DatabaseHelper.C_O_UID+" ASC",null);
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 OrgInfo orgInfo = new OrgInfo();
-                orgInfo.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.C_UID)));
+                orgInfo.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.C_O_UID)));
+                orgInfo.setUser_id(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_USER_UID)));
                 orgInfo.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_NAME)));
                 orgInfo.setAddress(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_ORG_ADDRESS)));
                 listOrgInfo.add(orgInfo);
-
             } while (cursor.moveToNext());
         }
-
         return listOrgInfo;
-
-    }
-
-    //USER EARNING GET ALL INFO
-    public ArrayList<EarningInfo> getAllEarningInfo() {
-        ArrayList<EarningInfo> listEarningInfo = new ArrayList<>();
-        Cursor cursor;
-        cursor = mDatabase.query(DatabaseHelper.TABLE_WAGE, user_earning_info_column, null, null, null, null, DatabaseHelper.C_E_UID + " ASC");
-
-        if (cursor != null && cursor.moveToFirst()) {
-            do {
-                EarningInfo earningInfo = new EarningInfo();
-                earningInfo.setDate_in_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
-                earningInfo.setStart_time_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
-                earningInfo.setDuration(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
-                earningInfo.setWages(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
-                listEarningInfo.add(earningInfo);
-            } while (cursor.moveToNext());
-        }
-        return listEarningInfo;
     }
 
     //SHEET GET ALL INFO
@@ -177,8 +174,9 @@ public class Database {
             do {
                 SheetInfo sheetInfo = new SheetInfo();
                 sheetInfo.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.C_S_UID)));
-                sheetInfo.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_NAME)));
                 sheetInfo.setOrg_uid(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_ORG_UID)));
+                sheetInfo.setUser_uid(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_USER_UID)));
+                sheetInfo.setName(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_NAME)));
                 sheetInfo.setOrg_name(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_ORG_NAME)));
                 sheetInfo.setOrg_address(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_S_ORG_ADDRESS)));
                 sheetInfo.setHourRate(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.C_S_HOUR_RATE)));
@@ -186,6 +184,28 @@ public class Database {
             } while (cursor.moveToNext());
         }
         return listSheetInfo;
+    }
+
+
+    //USER EARNING GET ALL INFO
+    public ArrayList<EarningInfo> getAllEarningInfo() {
+        ArrayList<EarningInfo> listEarningInfo = new ArrayList<>();
+        Cursor cursor;
+        cursor = mDatabase.query(DatabaseHelper.TABLE_WAGE, user_earning_info_column, null, null, null, null, DatabaseHelper.C_E_UID + " ASC");
+        if (cursor != null && cursor.moveToFirst()) {
+            do {
+                EarningInfo earningInfo = new EarningInfo();
+                earningInfo.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.C_E_UID)));
+                earningInfo.setSheet_uid(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_SHEET_UID)));
+                earningInfo.setUser_uid(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_USER_UID)));
+                earningInfo.setEntry_date(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
+                earningInfo.setStart_time(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
+                earningInfo.setDuration(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
+                earningInfo.setWages(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
+                listEarningInfo.add(earningInfo);
+            } while (cursor.moveToNext());
+        }
+        return listEarningInfo;
     }
 
 
@@ -198,14 +218,16 @@ public class Database {
         Cursor cursor;
 //        cursor = mDatabase.query(DatabaseHelper.TABLE_WAGE, user_earning_info_column,null,null,null,null,DatabaseHelper.C_E_UID+" DESC");
         cursor = mDatabase.rawQuery("SELECT * FROM " + DatabaseHelper.TABLE_WAGE + " WHERE  sheet_uid ='" + sheetUid + "'", null);
-
         if (cursor != null && cursor.moveToFirst()) {
             do {
                 EarningInfo earningInfo = new EarningInfo();
-                earningInfo.setDate_in_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
-                earningInfo.setStart_time_millis(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
-                earningInfo.setDuration(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
-                earningInfo.setWages(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
+                earningInfo.setId(cursor.getInt(cursor.getColumnIndex(DatabaseHelper.C_E_UID)));
+                earningInfo.setSheet_uid(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_SHEET_UID)));
+                earningInfo.setUser_uid(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_USER_UID)));
+                earningInfo.setEntry_date(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_DATE)));
+                earningInfo.setStart_time(cursor.getString(cursor.getColumnIndex(DatabaseHelper.C_E_START_TIME)));
+                earningInfo.setDuration(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.C_E_DURATION)));
+                earningInfo.setWages(cursor.getDouble(cursor.getColumnIndex(DatabaseHelper.C_E_WAGES)));
                 listEarningInfo.add(earningInfo);
             } while (cursor.moveToNext());
         }
@@ -215,31 +237,43 @@ public class Database {
     //---get total worked day from "TABLE_WAGE" where sheet id is selected from spinner--
     public int getTotalDayCount(int sheetId) {
         int totalDay;
-        Cursor mCursorCount = mDatabase.rawQuery("SELECT COUNT(*) FROM " + DatabaseHelper.TABLE_WAGE + " WHERE sheet_uid ='" + sheetId + "'", null);
-        mCursorCount.moveToFirst();
-        totalDay = mCursorCount.getInt(0);
-        mCursorCount.close();
-        return totalDay;
+        Cursor mCursorCount = mDatabase.rawQuery("SELECT COUNT( DISTINCT " + DatabaseHelper.C_E_DATE + ") AS totalRow FROM " + DatabaseHelper.TABLE_WAGE +
+                " WHERE sheet_uid ='" + sheetId + "'", null);
+        if (mCursorCount != null && mCursorCount.moveToFirst()) {
+            totalDay = mCursorCount.getInt(0);
+            mCursorCount.close();
+            return totalDay;
+        } else {
+            return totalDay = 0;
+        }
     }
 
     //---get total of wage and duration day--
     public int getTotalWage(int sheetId) {
         int totalWage;
-        Cursor mSumCursor = mDatabase.rawQuery("SELECT SUM(wages) FROM " + DatabaseHelper.TABLE_WAGE + " WHERE sheet_uid ='" + sheetId + "'", null);
-        mSumCursor.moveToFirst();
-        totalWage = mSumCursor.getInt(0);
-        mSumCursor.close();
-        return totalWage;
+        Cursor mSumCursor = mDatabase.rawQuery("SELECT SUM ( " + DatabaseHelper.C_E_WAGES + " ) AS totalRow FROM " + DatabaseHelper.TABLE_WAGE +
+                " WHERE " + DatabaseHelper.C_E_SHEET_UID + " = " + sheetId + "'", null);
+        if (mSumCursor != null && mSumCursor.moveToFirst()) {
+            totalWage = mSumCursor.getInt(0);
+            mSumCursor.close();
+            return totalWage;
+        } else {
+            return totalWage = 0;
+        }
     }
 
     //---get total of duration from wage table ---
     public long getTotalDuration(int sheetId) {
         int totalDuration;
-        Cursor mSumCursor = mDatabase.rawQuery("SELECT SUM(duration) FROM " + DatabaseHelper.TABLE_WAGE + " WHERE sheet_uid ='" + sheetId + "'", null);
-        mSumCursor.moveToFirst();
-        totalDuration = mSumCursor.getInt(0);
-        mSumCursor.close();
-        return totalDuration;
+        Cursor mSumCursor = mDatabase.rawQuery("SELECT SUM ( " + DatabaseHelper.C_E_DURATION + " ) AS totalRow FROM " + DatabaseHelper.TABLE_WAGE +
+                " WHERE " + DatabaseHelper.C_E_SHEET_UID + " = " + sheetId + "'", null);
+        if (mSumCursor != null && mSumCursor.moveToFirst()) {
+            totalDuration = mSumCursor.getInt(0);
+            mSumCursor.close();
+            return totalDuration;
+        } else {
+            return totalDuration = 0;
+        }
     }
 
     //----------------------------INNER DATABASE CLASS-----------------------------------
@@ -251,15 +285,20 @@ public class Database {
 
         //----------------------------TABLES-----------------------------------
         //TABLES
-        private static final String TABLE_ORGANIZATION_INFO = "table_org";
-        private static final String TABLE_WAGE = "table_wage";
-        private static final String TABLE_SHEET = "table_sheet";
         private static final String TABLE_USER_INFO = "table_user";
+        private static final String TABLE_ORGANIZATION_INFO = "table_org";
+        private static final String TABLE_SHEET = "table_sheet";
+        private static final String TABLE_WAGE = "table_wage";
 
         //----------------------------COLUMNS-----------------------------------
+        //USER TABLE
+        private static final String C_USER_UID = "id";
+        private static final String C_U_NAME = "user_name";
+        private static final String C_U_EMAIL = "user_email";
+
         //ORGANIZATION COLUMS
-        private static final String C_UID = "id";
-        private static final String C_USER_UID = "user_id";
+        private static final String C_O_UID = "id";
+        private static final String C_ORG_USER_UID = "user_id";
         private static final String C_ORG_NAME = "org_name";
         private static final String C_ORG_ADDRESS = "org_address";
 
@@ -282,47 +321,44 @@ public class Database {
         private static final String C_E_DURATION = "duration";
         private static final String C_E_WAGES = "wages";
 
-        //USER TABLE
-        private static final String C_U_UID = "id";
-        private static final String C_U_NAME = "user_name";
-        private static final String C_U_EMAIL = "user_email";
 
         //----------------------------CREATE TABLES QUERY-----------------------------------
-        //ORGANIZATION TABLE CREATE QUERY
-        private static final String CREATE_TABLE_ORG_INFO = "CREATE TABLE " + TABLE_ORGANIZATION_INFO + " (" +
-                C_UID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
-                C_U_UID + " INTEGER, " +
-                C_ORG_NAME + " TEXT, " +
-                C_ORG_ADDRESS + " TEXT " +
+
+        //USER INFO TABLE CREATE QUERY
+        public static final String CREATE_TABLE_USER_INFO = "CREATE TABLE " + TABLE_USER_INFO + " (" +
+                C_ORG_USER_UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                C_U_NAME + " TEXT, " +
+                C_U_EMAIL + " TEXT " +
                 ");";
 
-        //USER EARNING TABLE CREATE QUERY
-        private static final String CREATE_TABLE_USER_INCOME = "CREATE TABLE " + TABLE_WAGE + " (" +
-                C_E_UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                C_E_SHEET_UID + " INTEGER, " +
-                C_E_USER_UID + " INTEGER, " +
-                C_E_DATE + " TEXT, " +
-                C_E_START_TIME + " TEXT, " +
-                C_E_DURATION + " TEXT, " +
-                C_E_WAGES + " DOUBLE " +
+        //ORGANIZATION TABLE CREATE QUERY
+        private static final String CREATE_TABLE_ORG_INFO = "CREATE TABLE " + TABLE_ORGANIZATION_INFO + " (" +
+                C_O_UID + " INTEGER PRIMARY KEY AUTOINCREMENT," +
+                C_ORG_USER_UID + " TEXT, " +
+                C_ORG_NAME + " TEXT, " +
+                C_ORG_ADDRESS + " TEXT " +
                 ");";
 
         //SHEET INFO TABLE CREATE QUERY
         public static final String CREATE_TABLE_SHEET_INFO = "CREATE TABLE " + TABLE_SHEET + " (" +
                 C_S_UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                C_S_ORG_UID + " INTEGER, " +
-                C_S_USER_UID + " INTEGER, " +
+                C_S_ORG_UID + " TEXT, " +
+                C_S_USER_UID + " TEXT, " +
                 C_S_NAME + " TEXT, " +
                 C_S_ORG_NAME + " TEXT, " +
                 C_S_ORG_ADDRESS + " TEXT, " +
                 C_S_HOUR_RATE + "" +
                 ");";
 
-        //USER INFO TABLE CREATE QUERY
-        public static final String CREATE_TABLE_USER_INFO = "CREATE TABLE " + TABLE_USER_INFO + " (" +
-                C_U_UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-                C_U_NAME + " TEXT, " +
-                C_U_EMAIL + " TEXT " +
+        //USER EARNING TABLE CREATE QUERY
+        private static final String CREATE_TABLE_USER_INCOME = "CREATE TABLE " + TABLE_WAGE + " (" +
+                C_E_UID + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                C_E_SHEET_UID + " TEXT, " +
+                C_E_USER_UID + " TEXT, " +
+                C_E_DATE + " TEXT, " +
+                C_E_START_TIME + " TEXT, " +
+                C_E_DURATION + " DOUBLE, " +
+                C_E_WAGES + " DOUBLE " +
                 ");";
 
         public DatabaseHelper(Context context) {
